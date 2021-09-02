@@ -17,7 +17,7 @@ Commands in discords have 3 main parts:
 ## Define the base command
 All commands need a name and description
 ```java
-Command fizzBuzzCmd = new Command("fizzBuzz", "Prints 'foo' if divisible by 3, and prints 'bar' if divisible by 5");
+Command fizzBuzzCmd = new Command("fizzbuzz", "Prints 'foo' if divisible by 3, and prints 'bar' if divisible by 5");
 ```
 ## Define the options
 It is recommended that you read the official Discord API docs for [options](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure) and [sub commands/groups](https://discord.com/developers/docs/interactions/application-commands#subcommands-and-subcommand-groups)
@@ -27,7 +27,7 @@ A basic option is [anything that is SUB_COMMAND or a SUB_COMMAND_GROUP](https://
 To specify the type you want your option to be, we use the [SlashCommandOptionType](https://github.com/Javacord/Javacord/blob/v3.3.2/javacord-api/src/main/java/org/javacord/api/interaction/SlashCommandOptionType.java) enum from Javacord.
 Each option needs a name, description, and type. Optionally, you can declare that the option is required or not. (Defaults to *not* required)
 ```java
-Command fizzBuzzCmd = new Command("fizzBuzz", "Prints 'foo' if divisible by 3, and prints 'bar' if divisible by 5");
+Command fizzBuzzCmd = new Command("fizzbuzz", "Prints 'foo' if divisible by 3, and prints 'bar' if divisible by 5");
 Option number = new Option("number", "Any whole number", INTEGER, false);
 fizzBuzz.addOption(number);
 ```
@@ -149,5 +149,32 @@ public void sayHello(@SlashMeta SlashCommandInteraction interaction){
 ```
 See [Including Meta Data](#including-meta-data) on how to use the `@SlashMeta` annotation
 ## Handling Options
+Using our [fizzBuzz](#basic-options) example from before, lets create a method that can read the `number` option. 
+As long as the parameter **name and type** match an option found in the slash command, then it will be passed into the method. Otherwise it will default to null.
+
+Because of this primates such as `int`, `long`, `double`, and `boolean` are not allowed. Please use `Integer` or `Boolean`
+```java
+@SlashCommand(command = "fizzbuzz")
+public String handleFizzBuzz(Integer number){
+    // because we had previously declared the "number" option to be required,
+    // it is pretty safe to assume "number" will NOT be null
+    List<String> matches = new ArrayList<String>();
+    if(number % 3 == 0) matches.add("fizz");
+    if(number % 5 == 0) matches.add("buzz");
+
+    return matches.isEmpty() "No matches" ? String.join(" ", matches);
+}
+
+```
+### @OptionName
+Lets assume you name an option using a reserved keyword like `void`, used a dash in the option name, or simply do not want to be forced to name your parameter exactly like your option name. You can use the `@OptionName` annotation to declare the option name you wish to associate the parameter with.
+```java
+public String enableVoid(@OptionName("void") Boolean enabled, @OptionName("your-message") String yourMessage) {
+    return enabled ? yourMessage ? null; // null will result in NO response
+}
+
+```
+### Supporting Sub Commands
+### Supporting Command Groups
 ## Including Meta Data
 ## Subscribing the handlers
