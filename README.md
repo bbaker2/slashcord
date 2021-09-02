@@ -17,7 +17,7 @@ Commands in discords have 3 main parts:
 ## Define the base command
 All commands need a name and description
 ```java
-Command fizzBuzz = new Command("fizzBuzz", "Prints 'foo' if divisible by 3, and prints 'bar' if divisible by 5");
+Command fizzBuzzCmd = new Command("fizzBuzz", "Prints 'foo' if divisible by 3, and prints 'bar' if divisible by 5");
 ```
 ## Define the options
 It is recommended that you read the official Discord API docs for [options](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure) and [sub commands/groups](https://discord.com/developers/docs/interactions/application-commands#subcommands-and-subcommand-groups)
@@ -27,7 +27,7 @@ A basic option is [anything that is SUB_COMMAND or a SUB_COMMAND_GROUP](https://
 To specify the type you want your option to be, we use the [SlashCommandOptionType](https://github.com/Javacord/Javacord/blob/v3.3.2/javacord-api/src/main/java/org/javacord/api/interaction/SlashCommandOptionType.java) enum from Javacord.
 Each option needs a name, description, and type. Optionally, you can declare that the option is required or not. (Defaults to *not* required)
 ```java
-Command fizzBuzz = new Command("fizzBuzz", "Prints 'foo' if divisible by 3, and prints 'bar' if divisible by 5");
+Command fizzBuzzCmd = new Command("fizzBuzz", "Prints 'foo' if divisible by 3, and prints 'bar' if divisible by 5");
 Option number = new Option("number", "Any whole number", INTEGER, false);
 fizzBuzz.addOption(number);
 ```
@@ -36,7 +36,7 @@ fizzBuzz.addOption(number);
 Sub Commands are a special type of option that can ONLY be a child of a `Command` or `CommandGroup`. 
 Its child options can only be `Option`
 ```java
-Command roleCmd = new Command("role", "Assign or remove yourself from a role");
+Command role = new Command("role", "Assign or remove yourself from a role");
 Option roleOption = new Option("role", "Pick a role", ROLE, true); // you are allowed to "reuse" an option
 
 Option add = new SubCommand("add", "Add yourself to a role");
@@ -45,12 +45,12 @@ add.addOption(roleOption);
 Option remove = new SubCommand("remove", "Remove yourself from a role");
 remove.addOption(roleOption);
 
-roleCmd.addOption(add, remove); // addOption() is a vararg, hence the multiple arguments here
+role.addOption(add, remove); // addOption() is a vararg, hence the multiple arguments here
 ```
 ### Command Groups
 Command Groups are a special type of option that can ONLY be a child of a `Command`. 
 ```java
-Command msgMod = new Command("message-mods", "Inform the server mods");
+Command msgModCmd = new Command("message-mods", "Inform the server mods");
 
 Option details = new Option("comment", "Please describe the incident", STRING, true);
 Option user    = new Option("user", "The user involved", USER, true);
@@ -71,13 +71,46 @@ CommandGroup channelRequest = new CommandGroup("channel-request", "If the channe
     SubCommand updateTopic  = new SubCommand("update-topic", "The topic needs updating")
         .addOption(channel, new Option("topic", "The new topic", STRING, true)); // just a fancy example of ad-hoc option creations
     
-msgMod.addOption(reportUser, channelRequest);
+msgModCmd.addOption(reportUser, channelRequest);
 ```
 ## Register/Update the commands
+A single class is responsible for taking instances of `Command` and upserting them to Discord. This operations usually happens during initial creations and after the dev makes changes to a command.
+You always need to start by retrieving any pre-existing commands that the bot may have access to already. See the [official documentation in javacord's wiki](https://javacord.org/wiki/basic-tutorials/interactions/commands.html#get-your-commands) for the best way to accomplish this.
+
 ### Global Commands
-// TODO: example for global commands
+```java
+DiscordApi api; // previously initialized somehow
+List<SlashCommand> existingGlobal = api.getGlobalSlashCommands().join();
+
+// prepare the list of commands to send to Discord
+SlashCommandRegister cmdRegister = new SlashCommandRegister(existingGlobal);
+cmdRegister.queue(fizzBuzzCmd); // supports varargs
+List<SlashCommandBuilder> toUpsert = cmdRegister.upserts();
+
+// there is a chance that toUpsert will be empty
+// IFF discord already has the commands as-is
+if(!toUpsert.isEmpty()){
+    api.bulkOverwriteGlobalSlashCommands(toUpsert); // actually sends the commands to Discord
+}
+```
 ### Server Commands
-// TODO: examples for server commands
+```java
+DiscordApi api; // previously initialized somehow
+Server server; // previously retrieved somehow
+
+List<SlashCommand> existingServer = api.getServerSlashCommands(server).join();
+
+// prepare the list of commands to send to Discord
+SlashCommandRegister cmdRegister = new SlashCommandRegister(existingServer);
+cmdRegister.queue(rollCmd, msgModCmd); // supports varargs
+List<SlashCommandBuilder> toUpsert = cmdRegister.upserts();
+
+// there is a chance that toUpsert will be empty
+// IFF discord already has the commands as-is
+if(!toUpsert.isEmpty()){
+    api.bulkOverwriteServerSlashCommands(server, toUpsert); // actually sends the commands to Discord, for the given server
+}
+```
 
 # Command Usages via Annotations
 ## Handling Command
