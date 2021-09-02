@@ -35,4 +35,6 @@ All commands need a name and description
 // TODO: examples for server commands
 
 # Command Usages via Annotations
-todo
+## Handling Command
+## Handling Options
+## Including meta data
