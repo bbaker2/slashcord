@@ -114,5 +114,40 @@ if(!toUpsert.isEmpty()){
 
 # Command Usages via Annotations
 ## Handling Command
+Any public method can be used to receive a command. The method can either be a void or any return type that supports `String.valueOf(Object)`.
+See the below for the multiple ways to do the same thing
+```java
+@SlashCommand(command = "say-hello")
+public String sayHellow(){
+    return "hello world";
+}
+```
+```java
+@SlashCommand(command = "say-hello")
+public StringBuilder sayHellow(){
+    return new StringBuilder().append("hello world");
+}
+```
+```java
+@SlashCommand(command = "say-hello")
+public MessageBuilder sayHellow(){
+    return new MessageBuilder().append("hello world");
+}
+```
+**Note:** The `MessageBuilder` doesn't actually support `String.valueOf(Object)` but some special logic was introduced to support this
+```java
+@SlashCommand(command = "say-hello")
+public void sayHellow(@SlashMeta TextChannel channel){
+    new MessageBuilder().append("hello world").send(channel);
+}
+```
+```java
+@SlashCommand(command = "say-hello")
+public void sayHellow(@SlashMeta SlashCommandInteraction interaction){
+    interaction.createImmediateResponder().append("hello world").respond();
+}
+```
+See [Including Meta Data](#including-meta-data) on how to use the `@SlashMeta` annotation
 ## Handling Options
-## Including meta data
+## Including Meta Data
+## Subscribing the handlers
