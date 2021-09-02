@@ -30,8 +30,8 @@ Each option needs a name, description, and type. Optionally, you can declare tha
 Command fizzBuzz = new Command("fizzBuzz", "Prints 'foo' if divisible by 3, and prints 'bar' if divisible by 5");
 Option number = new Option("number", "Any whole number", INTEGER, false);
 fizzBuzz.addOption(number);
-**Note:** `Option` can only be a child of the `Command` or `SubCommand`
 ```
+**Note:** `Option` can only be a child of the `Command` or `SubCommand`
 ### Sub Commands
 Sub Commands are a special type of option that can ONLY be a child of a `Command` or `CommandGroup`. 
 Its child options can only be `Option`
@@ -51,23 +51,24 @@ roleCmd.addOption(add, remove); // addOption() is a vararg, hence the multiple a
 Command Groups are a special type of option that can ONLY be a child of a `Command`. 
 ```java
 Command msgMod = new Command("message-mods", "Inform the server mods");
+
 Option details = new Option("comment", "Please describe the incident", STRING, true);
-Option user = new Option("user", "The user involved", USER, true);
+Option user    = new Option("user", "The user involved", USER, true);
 Option channel = new Option("channel", "The channel involved", CHANNEL, true);
 
 // group 1
 CommandGroup reportUser = new CommandGroup("report-user", "Report a user");
     // the addOptions() also returns itself, so you can treat it like a builder pattern
-    SubCommand spamming = new SubCommand("spamming", "Too much irrelevant or unwanted content").addOption(user, details); 
-    SubCommand racism = new SubCommand("racism", "Negative comments based on skin, religion, or nationality").addOption(user, details);
-    SubCommand sexism = new SubCommand("sexism", "Negative comments based on gender. Includes homophobia").addOption(user, details);
-    SubCommand other = new SubCommand("other", "Anything that cannot be categorized as racism, sexism, or spamming").addOption(user, details);
+    SubCommand spamming = new SubCommand("spamming","Too much irrelevant or unwanted content").addOption(user, details); 
+    SubCommand racism   = new SubCommand("racism",  "Negative comments based on skin, religion, or nationality").addOption(user, details);
+    SubCommand sexism   = new SubCommand("sexism",  "Negative comments based on gender. Includes homophobia").addOption(user, details);
+    SubCommand other    = new SubCommand("other",   "Anything that cannot be categorized as racism, sexism, or spamming").addOption(user, details);
 reportUser.addOption(spamming, racism, sexism, other);
 
 // group 2
 CommandGroup channelRequest = new CommandGroup("channel-request", "If the channel is going to fast, you can request slow mode");
-    SubCommand slowMode = new SubCommand("slow-mode", "To many people talking at once. Requesting Slow Mode for an hour").addOption(channel);
-    SubCommand updateTopic = new SubCommand("update-topic", "The topic needs updating")
+    SubCommand slowMode     = new SubCommand("slow-mode", "To many people talking at once. Requesting Slow Mode for an hour").addOption(channel);
+    SubCommand updateTopic  = new SubCommand("update-topic", "The topic needs updating")
         .addOption(channel, new Option("topic", "The new topic", STRING, true)); // just a fancy example of ad-hoc option creations
     
 msgMod.addOption(reportUser, channelRequest);
