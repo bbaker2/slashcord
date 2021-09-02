@@ -118,32 +118,32 @@ Any public method can be used to receive a command. The method can either be a v
 See the below for the multiple ways to do the same thing
 ```java
 @SlashCommand(command = "say-hello")
-public String sayHellow(){
+public String sayHello(){
     return "hello world";
 }
 ```
 ```java
 @SlashCommand(command = "say-hello")
-public StringBuilder sayHellow(){
+public StringBuilder sayHello(){
     return new StringBuilder().append("hello world");
 }
 ```
 ```java
 @SlashCommand(command = "say-hello")
-public MessageBuilder sayHellow(){
+public MessageBuilder sayHello(){
     return new MessageBuilder().append("hello world");
 }
 ```
 **Note:** The `MessageBuilder` doesn't actually support `String.valueOf(Object)` but some special logic was introduced to support this
 ```java
 @SlashCommand(command = "say-hello")
-public void sayHellow(@SlashMeta TextChannel channel){
+public void sayHello(@SlashMeta TextChannel channel){
     new MessageBuilder().append("hello world").send(channel);
 }
 ```
 ```java
 @SlashCommand(command = "say-hello")
-public void sayHellow(@SlashMeta SlashCommandInteraction interaction){
+public void sayHello(@SlashMeta SlashCommandInteraction interaction){
     interaction.createImmediateResponder().append("hello world").respond();
 }
 ```
