@@ -29,7 +29,10 @@ All commands need a name and description
 // TODO: examples for command groups
 
 ## Register/Update the commands
-// TODO: example for upsert
+### Global Commands
+// TODO: example for global commands
+### Server Commands
+// TODO: examples for server commands
 
 # Command Usages via Annotations
 todo
