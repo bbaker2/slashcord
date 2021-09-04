@@ -39,6 +39,7 @@ Using our [fizzBuzz](#basic-options) example from before, lets create a method t
 As long as the parameter **name and type** match an option found in the slash command, then it will be passed into the method. Otherwise it will default to null.
 
 Because of this primates such as `int`, `long`, `double`, and `boolean` are not allowed. Please use `Integer` or `Boolean`
+For the below example, we will be assuming the `fizzbuzz` command [was previously defined](define-classes.md#basic-options).
 ```java
 @SlashCommand(command = "fizzbuzz")
 public String handleFizzBuzz(Integer number){
@@ -50,17 +51,17 @@ public String handleFizzBuzz(Integer number){
 
     return matches.isEmpty() "No matches" ? String.join(" ", matches);
 }
-
 ```
 ### @OptionName
 Lets assume you name an option using a reserved keyword like `void`, used a dash in the option name, or simply do not want to be forced to name your parameter exactly like your option name. You can use the `@OptionName` annotation to declare the option name you wish to associate the parameter with.
 ```java
+@SlashCommand(command = "repeat-back")
 public String enableVoid(@OptionName("void") Boolean enabled, @OptionName("your-message") String yourMessage) {
     return enabled ? yourMessage ? null; // null will result in NO response
 }
-
 ```
 ### Supporting Sub Commands
+
 ### Supporting Command Groups
 ## Including Meta Data
 ## Subscribing the handlers
