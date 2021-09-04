@@ -1,0 +1,66 @@
+# Command Usages via Annotations
+## Handling Command
+Any public method can be used to receive a command. The method can either be a void or any return type that supports `String.valueOf(Object)`.
+See the below for the multiple ways to do the same thing
+```java
+@SlashCommand(command = "say-hello")
+public String sayHello(){
+    return "hello world";
+}
+```
+```java
+@SlashCommand(command = "say-hello")
+public StringBuilder sayHello(){
+    return new StringBuilder().append("hello world");
+}
+```
+```java
+@SlashCommand(command = "say-hello")
+public MessageBuilder sayHello(){
+    return new MessageBuilder().append("hello world");
+}
+```
+**Note:** The `MessageBuilder` doesn't actually support `String.valueOf(Object)` but some special logic was introduced to support this
+```java
+@SlashCommand(command = "say-hello")
+public void sayHello(@SlashMeta TextChannel channel){
+    new MessageBuilder().append("hello world").send(channel);
+}
+```
+```java
+@SlashCommand(command = "say-hello")
+public void sayHello(@SlashMeta SlashCommandInteraction interaction){
+    interaction.createImmediateResponder().append("hello world").respond();
+}
+```
+See [Including Meta Data](#including-meta-data) on how to use the `@SlashMeta` annotation
+## Handling Options
+Using our [fizzBuzz](#basic-options) example from before, lets create a method that can read the `number` option. 
+As long as the parameter **name and type** match an option found in the slash command, then it will be passed into the method. Otherwise it will default to null.
+
+Because of this primates such as `int`, `long`, `double`, and `boolean` are not allowed. Please use `Integer` or `Boolean`
+```java
+@SlashCommand(command = "fizzbuzz")
+public String handleFizzBuzz(Integer number){
+    // because we had previously declared the "number" option to be required,
+    // it is pretty safe to assume "number" will NOT be null
+    List<String> matches = new ArrayList<String>();
+    if(number % 3 == 0) matches.add("fizz");
+    if(number % 5 == 0) matches.add("buzz");
+
+    return matches.isEmpty() "No matches" ? String.join(" ", matches);
+}
+
+```
+### @OptionName
+Lets assume you name an option using a reserved keyword like `void`, used a dash in the option name, or simply do not want to be forced to name your parameter exactly like your option name. You can use the `@OptionName` annotation to declare the option name you wish to associate the parameter with.
+```java
+public String enableVoid(@OptionName("void") Boolean enabled, @OptionName("your-message") String yourMessage) {
+    return enabled ? yourMessage ? null; // null will result in NO response
+}
+
+```
+### Supporting Sub Commands
+### Supporting Command Groups
+## Including Meta Data
+## Subscribing the handlers
