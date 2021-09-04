@@ -35,11 +35,10 @@ public void sayHello(@SlashMeta SlashCommandInteraction interaction){
 ```
 See [Including Meta Data](#including-meta-data) on how to use the `@SlashMeta` annotation
 ## Handling Options
-Using our [fizzBuzz](#basic-options) example from before, lets create a method that can read the `number` option. 
+Using our [fizzbuzz](define-classes.md#basic-options)) example from before, lets create a method that can read the `number` option. 
 As long as the parameter **name and type** match an option found in the slash command, then it will be passed into the method. Otherwise it will default to null.
 
-Because of this primates such as `int`, `long`, `double`, and `boolean` are not allowed. Please use `Integer` or `Boolean`
-For the below example, we will be assuming the `fizzbuzz` command [was previously defined](define-classes.md#basic-options).
+Because of this primates such as `int`, `long`, `double`, and `boolean` are not allowed. Please use `Integer` or `Boolean`.
 ```java
 @SlashCommand(command = "fizzbuzz")
 public String handleFizzBuzz(Integer number){
