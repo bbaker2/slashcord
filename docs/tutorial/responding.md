@@ -60,7 +60,59 @@ public String enableVoid(@OptionName("void") Boolean enabled, @OptionName("your-
 }
 ```
 ### Supporting Sub Commands
+Using our [role](define-classes.md#sub-commands) example from before, lets create a method that only is called for a specific sub command.
+```java
+@SlashCommand(command = "role", sub = "add")
+public void addRole(@SlashMeta User caller, Role role, InteractionFollowupMessageBuilder response) {
+    response.setFlags(MessageFlag.EPHEMERAL); // only visible to the calling user
+    caller.addRole(role)
+        .thenAccept(success -> {
+            response.append("Added to role").send();
+        })
+        .exceptionally(error -> {
+            response.append("Unsuccessful: ").append(error.getMessage()).send();
+            return null;
+        });
+}
+
+@SlashCommand(command = "role", sub = "remove")
+public void removeRole(@SlashMeta User caller, Role role, InteractionFollowupMessageBuilder response) {
+    response.setFlags(MessageFlag.EPHEMERAL); // only visible to the calling user
+    caller.removeRole(role)
+        .thenAccept(success -> {
+            response.append("Added to role").send();
+        })
+        .exceptionally(error -> {
+            response.append("Unsuccessful: ").append(error.getMessage()).send();
+            return null;
+        });
+}
+```
 
 ### Supporting Command Groups
+Using our [message-mods](define-classes.md#command-groups) example from before, lets create a method that only is called for a specific sub command within groups.
+```java
+@SlashCommand(command = "message-mods" group = "report-user", sub = "spamming")
+public void reportSpamming(@SlashMeta User caller, User spammer,
+    String reason, InteractionImmediateResponseBuilder response) {
+
+    reportUserForSpamming(spammer, reason);
+    response.setFlags(MessageFlag.EPHEMERAL); // only visible to the calling user
+    response.append(spammer).append(" has been reported for spamming.")
+    response.respond();
+}
+
+@SlashCommand(command = "message-mods" group = "report-user", sub = "other")
+public void reportSpamming(@SlashMeta User caller, User offender,
+    String reason, InteractionImmediateResponseBuilder response) {
+
+    reportUserGeneric(offender, reason);
+    response.setFlags(MessageFlag.EPHEMERAL); // only visible to the calling user
+    response.append(offender).append(" has been reported.")
+    response.respond();
+}
+
+// And repeat for racism and sexism
+```
 ## Including Meta Data
 ## Subscribing the handlers
