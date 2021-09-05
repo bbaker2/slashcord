@@ -153,6 +153,13 @@ dispatcher.subscribe(new FizzBuzz()); // This class is assumed to have methods w
 MessageMods msgModsCmd = new MessageMods();
 RoleAssigner roleCmd = RoelAssigner();
 dispatcher.subscribe(msgModsCmd, roleCmd); // and we support varags
+
+dispatcher.subscribe(new Object() { // or go crazy and create an ad-hoc method
+    @SlashCommand(command = "foo")
+    public String ifYouActuallyUseAnAnonymousClassLikeThisIWillKillYou() {
+        return "bar";
+    }
+});
 ```
 
 That's it.
