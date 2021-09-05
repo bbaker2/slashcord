@@ -114,8 +114,8 @@ public void reportSpamming(@SlashMeta User caller, User offender,
 
 // And repeat for racism and sexism
 ```
-## Including Meta Data
-Sometimes you need extra information that is NOT an option. And sometimes those values have naming/class-type conflicts with Options. To medicate this problem, you can use the `@SlashMeta` annotation.
+## @SlahMeta
+Sometimes you need extra information that is NOT an option. And sometimes those values have naming/class-type conflicts with Options. To avoid this problem, you can use the `@SlashMeta` annotation.
 
 The `@SlahMeta` annotation declares that a given method parameter is NOT an option and will instead come from the `SlashCommandInteraction` class instead. Common parameter types include:
 
@@ -135,5 +135,11 @@ public MessageBuilder optionLessExample(@SlashMeta User caller, @SlashMeta Chann
     return mb;
 }
 ```
+
+Other values derived from the `SlashCommandInteraction` will not conflict with Options and therefor will **not** require the `@SlashMeta` annotation. But there is no consequence if you use them for the following parameter types:
+- `DiscordApi`
+- `SlashCommandInteraction`
+- `InteractionImmediateResponseBuilder`
+- `InteractionFollowupMessageBuilder`
 
 ## Subscribing the handlers
