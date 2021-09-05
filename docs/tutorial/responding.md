@@ -127,7 +127,7 @@ Server | The server this command was triggered from
 
 ```java
 @SlashCommand(command = "example")
-public MessageBuilder multiResponse(@SlashMeta User caller, @SlashMeta Channel channel, @SlashMeta server) {
+public MessageBuilder optionLessExample(@SlashMeta User caller, @SlashMeta Channel channel, @SlashMeta Server server) {
     MessageBuilder mb = new MessageBuilder();
     mb.append(caller)
     mb.append(" called this command from channel ").append(channel)
