@@ -33,7 +33,7 @@ public void sayHello(@SlashMeta SlashCommandInteraction interaction){
     interaction.createImmediateResponder().append("hello world").respond();
 }
 ```
-See [Including Meta Data](#including-meta-data) on how to use the `@SlashMeta` annotation
+See [Including Meta Data](#slashmeta) on how to use the `@SlashMeta` annotation
 ## Handling Options
 Using our [fizzbuzz](define-classes.md#basic-options) example from before, lets create a method that can read the `number` option. 
 As long as the parameter **name and type** match an option found in the slash command, then it will be passed into the method. Otherwise it will default to null.
@@ -114,7 +114,7 @@ public void reportSpamming(@SlashMeta User caller, User offender,
 
 // And repeat for racism and sexism
 ```
-## @SlahMeta
+## @SlashMeta
 Sometimes you need extra information that is NOT an option. And sometimes those values have naming/class-type conflicts with Options. To avoid this problem, you can use the `@SlashMeta` annotation.
 
 The `@SlahMeta` annotation declares that a given method parameter is NOT an option and will instead come from the `SlashCommandInteraction` class instead. Common parameter types include:
