@@ -143,3 +143,16 @@ Other values derived from the `SlashCommandInteraction` will not conflict with O
 - `InteractionFollowupMessageBuilder`
 
 ## Subscribing the handlers
+Now that you have some methods that are able to receive and respond to slash commands, we need subscribe our classes to the event handler.
+That may sound scary, but it is actually quite easy thanks to `SlashCommandDispatcher`
+```java
+DiscordApi api; // previously initialized
+SlashCommandDispatcher dispatcher = new SlashCommandDispatcher(api);
+dispatcher.subscribe(new FizzBuzz()); // This class is assumed to have methods with @SlashCommand
+
+MessageMods msgModsCmd = new MessageMods();
+RoleAssigner roleCmd = RoelAssigner();
+dispatcher.subscribe(msgModsCmd, roleCmd); // and we support varags
+```
+
+That's it.
