@@ -117,7 +117,7 @@ public void reportSpamming(@SlashMeta User caller, User offender,
 ## @SlashMeta
 Sometimes you need extra information that is NOT an option. And sometimes those values have naming/class-type conflicts with Options. To avoid this problem, you can use the `@SlashMeta` annotation.
 
-The `@SlahMeta` annotation declares that a given method parameter is NOT an option and will instead come from the `SlashCommandInteraction` class instead. Common parameter types include:
+The `@SlashMeta` annotation declares that a given method parameter is NOT an option and will instead come from the `SlashCommandInteraction` class instead. Common parameter types include:
 
 Class | Purpose
 ----- | -------
