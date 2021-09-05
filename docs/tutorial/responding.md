@@ -118,11 +118,13 @@ public void reportSpamming(@SlashMeta User caller, User offender,
 Sometimes you need extra information that is NOT an option. And sometimes those values have naming/class-type conflicts with Options. To medicate this problem, you can use the `@SlashMeta` annotation.
 
 The `@SlahMeta` annotation declares that a given method parameter is NOT an option and will instead come from the `SlashCommandInteraction` class instead. Common parameter types include:
+
 Class | Purpose
 ----- | -------
 User | The user who triggered the slash command
 Channel | The channel this command was triggered from
 Server | The server this command was triggered from
+
 ```java
 @SlashCommand(command = "example")
 public MessageBuilder multiResponse(@SlashMeta User caller, @SlashMeta Channel channel, @SlashMeta server) {
