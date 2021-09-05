@@ -33,7 +33,7 @@ public void sayHello(@SlashMeta SlashCommandInteraction interaction){
     interaction.createImmediateResponder().append("hello world").respond();
 }
 ```
-See [Including Meta Data](#slashmeta) on how to use the `@SlashMeta` annotation
+See [@SlashMeta](#slashmeta) on how to use the `@SlashMeta` annotation
 ## Handling Options
 Using our [fizzbuzz](define-classes.md#basic-options) example from before, lets create a method that can read the `number` option. 
 As long as the parameter **name and type** match an option found in the slash command, then it will be passed into the method. Otherwise it will default to null.
