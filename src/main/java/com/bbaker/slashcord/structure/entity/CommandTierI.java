@@ -1,10 +1,9 @@
 package com.bbaker.slashcord.structure.entity;
 
-public class CommandTierI extends Command {
+public class CommandTierI extends BaseCommand<InputOption> {
 
     public CommandTierI(String name, String description) {
-        this.name = name;
-        this.description = description;
+        super(name, description);
     }
 
 }

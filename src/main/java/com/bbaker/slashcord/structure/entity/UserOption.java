@@ -4,7 +4,7 @@ import org.javacord.api.interaction.SlashCommandOptionType;
 
 public class UserOption extends InputOption {
 
-    protected UserOption(String name, String description, boolean required) {
+    public UserOption(String name, String description, boolean required) {
         super(name, description, required, SlashCommandOptionType.USER);
     }
 
