@@ -5,7 +5,7 @@ import java.util.Objects;
 public class Choice {
 
     protected String name;
-    protected String strString;
+    protected String strVal;
     protected int intVal;
 
     public String getName() {
@@ -13,7 +13,7 @@ public class Choice {
     }
 
     public String getStrString() {
-        return strString;
+        return strVal;
     }
 
     public int getIntVal() {
