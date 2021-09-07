@@ -8,6 +8,7 @@ public @interface OptionDef {
     String description();
     SlashCommandOptionType type();
     boolean required() default false;
+    OptionDef[] options() default {};
     ChoiceDef[] choices() default {};
 
 
