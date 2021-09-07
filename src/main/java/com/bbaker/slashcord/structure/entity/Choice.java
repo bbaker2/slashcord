@@ -4,9 +4,9 @@ import java.util.Objects;
 
 public class Choice {
 
-    private String name;
-    private String strString;
-    private int intVal;
+    protected String name;
+    protected String strString;
+    protected int intVal;
 
     public String getName() {
         return name;

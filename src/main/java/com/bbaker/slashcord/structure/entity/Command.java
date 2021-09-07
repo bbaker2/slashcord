@@ -7,9 +7,9 @@ import java.util.Objects;
 
 public class Command {
 
-    private String name;
-    private String description;
-    private List<Option> options;
+    protected String name;
+    protected String description;
+    protected List<Option> options;
 
     public String getName() {
         return name;
