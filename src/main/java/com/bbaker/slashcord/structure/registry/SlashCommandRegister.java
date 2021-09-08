@@ -42,7 +42,7 @@ public class SlashCommandRegister {
                 if(desired.getName().equals(existing.getName())){
                     if(desired.equals(existing)) {
                         // they match. We do not have to queue this command for updates
-                        break;
+                        continue outer; // force continue the outer loop
                     } else { // they do not match. Queue this command for an update
                         toUpsert.add(ConverterUtil.from(desired));
                         continue outer; // force continue the outer loop

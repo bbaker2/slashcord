@@ -1,6 +1,7 @@
 package com.bbaker.slashcord.structure.entity;
 
 import static com.bbaker.slashcord.structure.util.CompareUtil.equalLists;
+import static java.util.stream.Collectors.joining;
 
 import java.util.List;
 import java.util.Objects;
@@ -44,6 +45,20 @@ public class Command {
        }
 
        return true;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(getName());
+        if(getOptions() != null && !getOptions().isEmpty()) {
+            sb.append(System.lineSeparator());
+            sb.append(
+                getOptions().stream()
+                    .map(Option::toString)
+                    .collect(joining(System.lineSeparator() + "  "))
+            );
+        }
+        return sb.toString();
     }
 
 

@@ -40,4 +40,8 @@ public class Choice {
         }
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

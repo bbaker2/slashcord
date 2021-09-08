@@ -35,6 +35,7 @@ public class ConverterUtil {
         SlashCommandOptionBuilder builder = new SlashCommandOptionBuilder();
         builder.setName(option.getName());
         builder.setDescription(option.getDescription());
+        builder.setType(option.getType());
         builder.setRequired(option.isRequired());
 
         if(isNotEmpty(option.getChoices())) {
@@ -91,6 +92,7 @@ public class ConverterUtil {
             this.name = sco.getName();
             this.description = sco.getDescription();
             this.required = sco.isRequired();
+            this.type = sco.getType();
             this.options =	sco.getOptions().stream().map(SimpleOption::new).collect(toList());
             this.choices = sco.getChoices().stream().map(SimpleChoice::new).collect(toList());
         }

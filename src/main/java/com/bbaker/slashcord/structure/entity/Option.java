@@ -1,6 +1,8 @@
 package com.bbaker.slashcord.structure.entity;
 
 import static com.bbaker.slashcord.structure.util.CompareUtil.equalLists;
+import static java.lang.String.format;
+import static java.util.stream.Collectors.joining;
 
 import java.util.List;
 import java.util.Objects;
@@ -70,6 +72,31 @@ public class Option {
 
 
         return true;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(format("%s (%s, %b)", getName(), getType(), isRequired()));
+
+        if(getChoices() != null && !getChoices().isEmpty()) {
+            sb.append(System.lineSeparator());
+            sb.append(
+                getChoices().stream()
+                    .map(Choice::toString)
+                    .collect(joining(", "))
+            );
+        }
+
+        if(getOptions() != null && !getOptions().isEmpty()) {
+            sb.append(System.lineSeparator());
+            sb.append(
+                getOptions().stream()
+                    .map(Option::getName)
+                    .collect(joining(", "))
+            );
+        }
+        return sb.toString();
     }
 
 }
