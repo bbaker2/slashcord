@@ -24,6 +24,12 @@ public class SlashCommandRegister {
     public CompletableFuture<List<SlashCommand>> upsert(DiscordApi api){
         List<SlashCommandBuilder> prepared = preview(api);
 
+        if(prepared.isEmpty()) {
+            System.out.println("Nothing to update");
+            return CompletableFuture.completedFuture(List.of());
+        }
+
+        System.out.println("Updating " + prepared.size() + " commands");
         return api.bulkOverwriteGlobalSlashCommands(prepared);
     }
 
