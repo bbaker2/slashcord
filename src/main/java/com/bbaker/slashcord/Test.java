@@ -1,11 +1,9 @@
 package com.bbaker.slashcord;
 
-import java.util.List;
-
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
-import org.javacord.api.interaction.SlashCommand;
 
+import com.bbaker.slashcord.handler.dispatcher.AnnotationCommandListener;
 import com.bbaker.slashcord.structure.entity.CommandTierI;
 import com.bbaker.slashcord.structure.entity.IntOption;
 import com.bbaker.slashcord.structure.registry.SlashCommandRegister;
@@ -23,8 +21,13 @@ public class Test {
         SlashCommandRegister register = new SlashCommandRegister();
         register.queue(fizzbuzz);
 
-        List<SlashCommand> upserted = register.upsert(api).join();
-        System.out.print(upserted.size());
+        register.upsert(api).join();
+
+
+        AnnotationCommandListener listener = new AnnotationCommandListener();
+        listener.addListener(new FizzBuzz());
+        api.addSlashCommandCreateListener(listener);
 
     }
+
 }
