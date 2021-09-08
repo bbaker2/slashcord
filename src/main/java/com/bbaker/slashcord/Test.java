@@ -16,6 +16,19 @@ public class Test {
 
     public static void main(String...args) {
 
+        outer:
+        for(int i = 0; i < 10; i++) {
+            for(int j = 0; j < 10; j++) {
+                if(i == j) {
+                    System.out.printf("==(%d, %d)==%n", i, j);
+                    continue outer;
+                }
+                System.out.println(" j = " + j);
+            }
+            System.out.println("i = " + i);
+        }
+
+        if(true)return;
         Command regular = new CommandTierI("fizzbuzz", "Prints 3 or 5").addOption(new IntOption("number", "any whole number", true));
 
         InputOption role = new RoleOption("role", "The desired role", true);

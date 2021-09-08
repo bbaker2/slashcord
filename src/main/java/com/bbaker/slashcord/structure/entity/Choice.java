@@ -5,14 +5,14 @@ import java.util.Objects;
 public class Choice {
 
     protected String name;
-    protected String strVal;
-    protected int intVal;
+    protected String strVal = null;
+    protected int intVal = -1;
 
     public String getName() {
         return name;
     }
 
-    public String getStrString() {
+    public String getStrVal() {
         return strVal;
     }
 
@@ -31,12 +31,12 @@ public class Choice {
             return false;
         }
 
-        if(this.getStrString() == null && that.getStrString() == null) {
+        if(this.getStrVal() == null && that.getStrVal() == null) {
             return this.getIntVal() == that.getIntVal();
-        } else if(this.getStrString() == null ^ that.getStrString() == null) {
+        } else if(this.getStrVal() == null ^ that.getStrVal() == null) {
             return false;
         } else {
-            return this.getStrString().equals(that.getStrString());
+            return this.getStrVal().equals(that.getStrVal());
         }
     }
 
