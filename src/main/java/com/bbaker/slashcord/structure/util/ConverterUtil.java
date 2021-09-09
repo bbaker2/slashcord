@@ -1,9 +1,11 @@
 package com.bbaker.slashcord.structure.util;
 
-import static com.bbaker.slashcord.structure.util.CommonsUtil.*;
-import static java.util.stream.Collectors.*;
+import static com.bbaker.slashcord.structure.util.CommonsUtil.isBlank;
+import static java.util.stream.Collectors.toList;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.javacord.api.interaction.SlashCommand;
 import org.javacord.api.interaction.SlashCommandBuilder;
@@ -11,6 +13,7 @@ import org.javacord.api.interaction.SlashCommandOption;
 import org.javacord.api.interaction.SlashCommandOptionBuilder;
 import org.javacord.api.interaction.SlashCommandOptionChoice;
 import org.javacord.api.interaction.SlashCommandOptionChoiceBuilder;
+import org.javacord.api.interaction.SlashCommandUpdater;
 
 import com.bbaker.slashcord.structure.entity.Choice;
 import com.bbaker.slashcord.structure.entity.Command;
@@ -66,6 +69,24 @@ public class ConverterUtil {
 
         return builder.build();
     }
+
+    public static SlashCommandUpdater from(Command command, long commandId) {
+        SlashCommandUpdater updater = new SlashCommandUpdater(commandId);
+        updater.setName(command.getName());
+        updater.setDescription(command.getDescription());
+
+        if(isNotEmpty(command.getOptions())) {
+            List<SlashCommandOption> options = new ArrayList<>();
+            for(Option o : command.getOptions()) {
+                options.add(from(o));
+            }
+
+            updater.setSlashCommandOptions(options);
+        }
+
+        return updater;
+    }
+
 
     public static boolean isNotEmpty(Collection<?> c) {
         return c != null && !c.isEmpty();
