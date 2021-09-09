@@ -1,5 +1,7 @@
 package com.bbaker.slashcord.structure.registry;
 
+import static java.util.Arrays.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -26,7 +28,7 @@ public class SlashCommandRegister {
 
         if(prepared.isEmpty()) {
             System.out.println("Nothing to update");
-            return CompletableFuture.completedFuture(List.of());
+            return CompletableFuture.completedFuture(asList());
         }
 
         System.out.println("Updating " + prepared.size() + " commands");

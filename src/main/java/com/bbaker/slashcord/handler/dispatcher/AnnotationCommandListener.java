@@ -1,5 +1,7 @@
 package com.bbaker.slashcord.handler.dispatcher;
 
+import static com.bbaker.slashcord.structure.util.CommonsUtil.*;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
@@ -98,9 +100,10 @@ public class AnnotationCommandListener implements SlashCommandCreateListener {
             // cmd_sub
             // cmd_group_sub
             String hash = slashCmd.command();
-            if(!slashCmd.group().isBlank() && !slashCmd.sub().isBlank()) {
+
+            if(isNotBlank(slashCmd.group()) && isNotBlank(slashCmd.sub())) {
                 hash += "_" + slashCmd.group() + "_" + slashCmd.sub();
-            } else if(!slashCmd.sub().isBlank()) {
+            } else if(isNotBlank(slashCmd.sub())) {
                 hash += "_" + slashCmd.sub();
             }
 

@@ -1,6 +1,7 @@
 package com.bbaker.slashcord.structure.util;
 
-import static java.util.stream.Collectors.toList;
+import static com.bbaker.slashcord.structure.util.CommonsUtil.*;
+import static java.util.stream.Collectors.*;
 
 import java.util.Collection;
 
@@ -57,7 +58,7 @@ public class ConverterUtil {
 
         builder.setName(choice.getName());
 
-        if(choice.getStrVal() == null || choice.getStrVal().isBlank()) {
+        if(isBlank(choice.getStrVal())) {
             builder.setValue(choice.getIntVal());
         } else {
             builder.setValue(choice.getStrVal());
