@@ -27,9 +27,9 @@ public class CompareUtil {
 
     public static <T> boolean equalLists(List<T> a, List<T> b) {
 
-        if(a == null && b == null) {
+        if (isEmpty(a) && isEmpty(b)){
             return true;
-        } else if (a == null ^ b == null){
+        } else if (isEmpty(a) ^ isEmpty(b)){
             return false;
         } else if (a.size() != b.size()){
             return false;
@@ -42,6 +42,10 @@ public class CompareUtil {
             return true;
         }
 
+    }
+
+    public static <T> boolean isEmpty(List<T> list) {
+        return list == null || list.isEmpty();
     }
 
 }
