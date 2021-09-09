@@ -1,6 +1,6 @@
-package com.bbaker.slashcord.structure.registry;
+package com.bbaker.slashcord.structure;
 
-import static com.bbaker.slashcord.structure.util.ConverterUtil.from;
+import static com.bbaker.slashcord.util.ConverterUtil.from;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +14,7 @@ import org.javacord.api.interaction.SlashCommandBuilder;
 import org.javacord.api.interaction.SlashCommandUpdater;
 
 import com.bbaker.slashcord.structure.entity.Command;
-import com.bbaker.slashcord.structure.util.ConverterUtil;
+import com.bbaker.slashcord.util.ConverterUtil;
 
 public class SlashCommandRegister {
 

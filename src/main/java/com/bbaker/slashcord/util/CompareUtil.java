@@ -1,4 +1,4 @@
-package com.bbaker.slashcord.structure.util;
+package com.bbaker.slashcord.util;
 
 import java.util.Comparator;
 import java.util.List;

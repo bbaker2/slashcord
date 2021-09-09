@@ -1,4 +1,4 @@
-package com.bbaker.slashcord.handler.dispatcher;
+package com.bbaker.slashcord.handler;
 
 import java.lang.reflect.Method;
 import java.util.function.BiConsumer;

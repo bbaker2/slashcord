@@ -1,6 +1,6 @@
-package com.bbaker.slashcord.handler.dispatcher;
+package com.bbaker.slashcord.handler;
 
-import static com.bbaker.slashcord.structure.util.CommonsUtil.*;
+import static com.bbaker.slashcord.util.CommonsUtil.*;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -41,7 +41,7 @@ import com.bbaker.slashcord.handler.response.MessageBuilderResponse;
 import com.bbaker.slashcord.handler.response.StringResponse;
 import com.bbaker.slashcord.handler.response.VoidResponse;
 
-public class AnnotationCommandListener implements SlashCommandCreateListener {
+public class SlashCommandListener implements SlashCommandCreateListener {
 
     Map<String, Consumer<SlashCommandInteraction>> listeners = new HashMap<>();
 

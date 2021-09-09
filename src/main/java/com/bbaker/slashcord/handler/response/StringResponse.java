@@ -1,6 +1,6 @@
 package com.bbaker.slashcord.handler.response;
 
-import static com.bbaker.slashcord.structure.util.CommonsUtil.*;
+import static com.bbaker.slashcord.util.CommonsUtil.*;
 
 import java.util.function.BiConsumer;
 

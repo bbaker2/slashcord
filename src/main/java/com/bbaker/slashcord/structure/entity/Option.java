@@ -1,6 +1,6 @@
 package com.bbaker.slashcord.structure.entity;
 
-import static com.bbaker.slashcord.structure.util.CompareUtil.equalLists;
+import static com.bbaker.slashcord.util.CompareUtil.equalLists;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
 

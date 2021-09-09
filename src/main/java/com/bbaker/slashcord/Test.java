@@ -3,7 +3,8 @@ package com.bbaker.slashcord;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 
-import com.bbaker.slashcord.handler.dispatcher.AnnotationCommandListener;
+import com.bbaker.slashcord.handler.SlashCommandListener;
+import com.bbaker.slashcord.structure.SlashCommandRegister;
 import com.bbaker.slashcord.structure.entity.ChannelOption;
 import com.bbaker.slashcord.structure.entity.Command;
 import com.bbaker.slashcord.structure.entity.CommandTierI;
@@ -14,7 +15,6 @@ import com.bbaker.slashcord.structure.entity.IntOption;
 import com.bbaker.slashcord.structure.entity.RoleOption;
 import com.bbaker.slashcord.structure.entity.SubOption;
 import com.bbaker.slashcord.structure.entity.UserOption;
-import com.bbaker.slashcord.structure.registry.SlashCommandRegister;
 
 public class Test {
 
@@ -31,7 +31,7 @@ public class Test {
         register.queue(createModsCommand());
         register.upsert(api).join();
 
-        AnnotationCommandListener listener = new AnnotationCommandListener();
+        SlashCommandListener listener = new SlashCommandListener();
         listener.addListener(new FizzBuzz());
         listener.addListener(new ModCommand());
         api.addSlashCommandCreateListener(listener);

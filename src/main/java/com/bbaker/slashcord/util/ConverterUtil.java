@@ -1,6 +1,6 @@
-package com.bbaker.slashcord.structure.util;
+package com.bbaker.slashcord.util;
 
-import static com.bbaker.slashcord.structure.util.CommonsUtil.isBlank;
+import static com.bbaker.slashcord.util.CommonsUtil.isBlank;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
