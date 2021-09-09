@@ -12,7 +12,7 @@ public class GroupOption extends Option {
         this.type = SlashCommandOptionType.SUB_COMMAND_GROUP;
         this.choices = null;
         this.options = new ArrayList<>();
-        this.required = true;
+        this.required = false;
     }
 
     public GroupOption addOptions(SubOption...options) {

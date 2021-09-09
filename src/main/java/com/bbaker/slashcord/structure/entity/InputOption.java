@@ -12,7 +12,7 @@ public class InputOption extends Option {
         this.type = type;
         this.choices = new ArrayList<>();
         this.options = new ArrayList<>();
-        this.required = false;
+        this.required = required;
     }
 
 }

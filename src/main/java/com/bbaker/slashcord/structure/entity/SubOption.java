@@ -12,7 +12,7 @@ public class SubOption extends Option {
             this.type = SlashCommandOptionType.SUB_COMMAND;
             this.choices = null;
             this.options = new ArrayList<>();
-            this.required = true;
+            this.required = false;
         }
 
         public SubOption addOptions(InputOption...options) {
