@@ -17,6 +17,9 @@ public class SlashCommandDispatcher {
     private static SlashCommandListener listener = null;
     List<Object> queuedCommands = new ArrayList<>();
 
+    public SlashCommandDispatcher(DiscordApi api) {
+        this.api = api;
+    }
 
     public SlashCommandDispatcher queue(Object... cmd) {
         for(Object each : cmd) {

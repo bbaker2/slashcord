@@ -3,8 +3,7 @@ package com.bbaker.slashcord.examples;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 
-import com.bbaker.slashcord.handler.SlashCommandListener;
-import com.bbaker.slashcord.structure.SlashCommandRegister;
+import com.bbaker.slashcord.dispatcher.SlashCommandDispatcher;
 import com.bbaker.slashcord.structure.entity.ChannelOption;
 import com.bbaker.slashcord.structure.entity.Command;
 import com.bbaker.slashcord.structure.entity.CommandTierI;
@@ -24,19 +23,12 @@ public class Test {
 
         DiscordApi api = new DiscordApiBuilder().setToken(args[0]).login().join();
 
-        SlashCommandRegister register = new SlashCommandRegister();
-        register.queue(createPingPong());
-        register.queue(createFizzBuzzCommand());
-        register.queue(createModsCommand());
-        register.queue(createQuoteCommand());
-        register.upsert(api).join();
-
-        SlashCommandListener listener = new SlashCommandListener();
-        listener.addListener(new PingPongCommand());
-        listener.addListener(new FizzBuzz());
-        listener.addListener(new QuoteCommand());
-        listener.addListener(new ModCommand());
-        api.addSlashCommandCreateListener(listener);
+        SlashCommandDispatcher dispatcher = new SlashCommandDispatcher(api);
+        dispatcher.queue(createPingPong(), 			new PingPongCommand());
+        dispatcher.queue(createFizzBuzzCommand(), 	new FizzBuzz());
+        dispatcher.queue(createModsCommand(),		new QuoteCommand());
+        dispatcher.queue(createQuoteCommand(), 		new ModCommand());
+        dispatcher.submit().join();
     }
 
     public static Command createPingPong() {
