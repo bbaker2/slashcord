@@ -20,6 +20,8 @@ import org.javacord.api.entity.user.User;
 import org.javacord.api.event.interaction.SlashCommandCreateEvent;
 import org.javacord.api.interaction.SlashCommandInteraction;
 import org.javacord.api.interaction.SlashCommandInteractionOption;
+import org.javacord.api.interaction.callback.InteractionFollowupMessageBuilder;
+import org.javacord.api.interaction.callback.InteractionImmediateResponseBuilder;
 import org.javacord.api.listener.interaction.SlashCommandCreateListener;
 
 import com.bbaker.slashcord.handler.annotation.Slash;
@@ -30,6 +32,8 @@ import com.bbaker.slashcord.handler.args.ApiMetaArgument;
 import com.bbaker.slashcord.handler.args.BooleanOptionArgument;
 import com.bbaker.slashcord.handler.args.ChannelMetaArgument;
 import com.bbaker.slashcord.handler.args.ChannelOptionArgument;
+import com.bbaker.slashcord.handler.args.FollowupResponseMetaArgument;
+import com.bbaker.slashcord.handler.args.ImmediateResponseMetaArgument;
 import com.bbaker.slashcord.handler.args.IntegerOptionArgument;
 import com.bbaker.slashcord.handler.args.InteractionMetaArgument;
 import com.bbaker.slashcord.handler.args.InteractionOptionArgument;
@@ -149,6 +153,7 @@ public class SlashCommandListener implements SlashCommandCreateListener {
             boolean isMeta = param.getAnnotation(SlashMeta.class) != null;
 
             Class<?> type = param.getType();
+            // Meta Arguments
             if(type.isAssignableFrom(DiscordApi.class)) {
                 args[i] = new ApiMetaArgument();
 
@@ -158,6 +163,13 @@ public class SlashCommandListener implements SlashCommandCreateListener {
             } else if (type.isAssignableFrom(SlashCommandInteraction.class)) {
                 args[i] = new InteractionMetaArgument();
 
+            } else if (type.isAssignableFrom(InteractionImmediateResponseBuilder.class)) {
+                args[i] = new ImmediateResponseMetaArgument();
+
+            } else if (type.isAssignableFrom(InteractionFollowupMessageBuilder.class)) {
+                args[i] = new FollowupResponseMetaArgument();
+
+            // Meta AND Option Arguments
             } else if (type.isAssignableFrom(User.class)) {
                 if(isMeta) {
                     args[i] = new UserMetaArgument();
@@ -165,6 +177,7 @@ public class SlashCommandListener implements SlashCommandCreateListener {
                     args[i] = new UserOptionArgument(name);
                 }
 
+            // Option Arguments
             } else if (type.isAssignableFrom(Integer.class)) {
                 args[i] = new IntegerOptionArgument(name);
 

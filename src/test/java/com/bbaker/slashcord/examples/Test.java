@@ -8,11 +8,13 @@ import com.bbaker.slashcord.structure.SlashCommandRegister;
 import com.bbaker.slashcord.structure.entity.ChannelOption;
 import com.bbaker.slashcord.structure.entity.Command;
 import com.bbaker.slashcord.structure.entity.CommandTierI;
+import com.bbaker.slashcord.structure.entity.CommandTierII;
 import com.bbaker.slashcord.structure.entity.CommandTierIII;
 import com.bbaker.slashcord.structure.entity.GroupOption;
 import com.bbaker.slashcord.structure.entity.InputOption;
 import com.bbaker.slashcord.structure.entity.IntOption;
 import com.bbaker.slashcord.structure.entity.RoleOption;
+import com.bbaker.slashcord.structure.entity.StringOption;
 import com.bbaker.slashcord.structure.entity.SubOption;
 import com.bbaker.slashcord.structure.entity.UserOption;
 
@@ -23,14 +25,22 @@ public class Test {
         DiscordApi api = new DiscordApiBuilder().setToken(args[0]).login().join();
 
         SlashCommandRegister register = new SlashCommandRegister();
+        register.queue(createPingPong());
         register.queue(createFizzBuzzCommand());
         register.queue(createModsCommand());
+        register.queue(createQuoteCommand());
         register.upsert(api).join();
 
         SlashCommandListener listener = new SlashCommandListener();
+        listener.addListener(new PingPongCommand());
         listener.addListener(new FizzBuzz());
+        listener.addListener(new QuoteCommand());
         listener.addListener(new ModCommand());
         api.addSlashCommandCreateListener(listener);
+    }
+
+    public static Command createPingPong() {
+        return new CommandTierI("ping", "Will Ping");
     }
 
     public static Command createFizzBuzzCommand() {
@@ -39,6 +49,20 @@ public class Test {
                  new IntOption("number", "Any whole number", true)
          );
     }
+
+    public static Command createQuoteCommand() {
+        CommandTierII quote = new CommandTierII("quote", "For quoting funny things in the server");
+        quote.addOption(
+            new SubOption("add", "Add a quote").addOptions(
+                new StringOption("quote", "The quote itself", true),
+                new UserOption("user", "Who said the quote?", false)
+            ),
+            new SubOption("random", "Output a random quote")
+        );
+
+        return quote;
+    }
+
 
     public static Command createModsCommand() {
         CommandTierIII mod = new CommandTierIII("mod", 		"Useful commands for the server mods");
