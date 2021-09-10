@@ -12,7 +12,7 @@ public class StringResponse implements BiConsumer<Object, SlashCommandInteractio
     public void accept(Object value, SlashCommandInteraction sci) {
         String response = (String)value;
         if(isBlank(response)) {
-            sci.createImmediateResponder().respond();
+            sci.createImmediateResponder().append("null").respond();
         } else {
             sci.createImmediateResponder().append(response).respond();
         }
