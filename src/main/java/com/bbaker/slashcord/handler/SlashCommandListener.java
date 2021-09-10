@@ -1,6 +1,6 @@
 package com.bbaker.slashcord.handler;
 
-import static com.bbaker.slashcord.util.CommonsUtil.*;
+import static com.bbaker.slashcord.util.CommonsUtil.isNotBlank;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -48,8 +48,8 @@ public class SlashCommandListener implements SlashCommandCreateListener {
     @Override
     public void onSlashCommandCreate(SlashCommandCreateEvent event) {
         SlashCommandInteraction slashEvent = event.getSlashCommandInteraction();
+
         Optional<SlashCommandInteractionOption> first = slashEvent.getFirstOption();
-        Optional<SlashCommandInteractionOption> second = slashEvent.getSecondOption();
 
         // construct the command hash which could be
         // cmd
@@ -62,6 +62,8 @@ public class SlashCommandListener implements SlashCommandCreateListener {
             if(gos.isSubcommandOrGroup()) {
                 hash += "_" + gos.getName();
             }
+
+            Optional<SlashCommandInteractionOption> second = gos.getFirstOption();
 
             if(second.isPresent()) {
                 SlashCommandInteractionOption sub = second.get();
@@ -106,6 +108,7 @@ public class SlashCommandListener implements SlashCommandCreateListener {
             } else if(isNotBlank(slashCmd.sub())) {
                 hash += "_" + slashCmd.sub();
             }
+
 
             Parameter[] params = cmdMethod.getParameters();
             Function<SlashCommandInteraction, Object>[] argHandlers = generateParamHandlers(params);
