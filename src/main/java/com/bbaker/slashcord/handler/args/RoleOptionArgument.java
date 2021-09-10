@@ -1,17 +1,17 @@
 package com.bbaker.slashcord.handler.args;
 
 import org.javacord.api.entity.permission.Role;
-import org.javacord.api.interaction.SlashCommandInteraction;
+import org.javacord.api.interaction.SlashCommandInteractionOptionsProvider;
 
-public class RoleOptionArgument extends AbstractOptionArgument {
+public class RoleOptionArgument extends AbstractOptionArgument<Role> {
 
     public RoleOptionArgument(String name) {
         super(name);
     }
 
     @Override
-    public Role apply(SlashCommandInteraction sci) {
-        return sci.getOptionRoleValueByName(name).orElse(null);
+    protected Role getValue(SlashCommandInteractionOptionsProvider interaction) {
+        return interaction.getOptionRoleValueByName(name).orElse(null);
     }
 
 }

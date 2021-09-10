@@ -1,16 +1,17 @@
 package com.bbaker.slashcord.handler.args;
 
-import org.javacord.api.interaction.SlashCommandInteraction;
+import org.javacord.api.interaction.SlashCommandInteractionOptionsProvider;
 
-public class StringOptionArgument extends AbstractOptionArgument {
+public class StringOptionArgument extends AbstractOptionArgument<String> {
 
     public StringOptionArgument(String name) {
         super(name);
     }
 
+
     @Override
-    public String apply(SlashCommandInteraction sci) {
-        return sci.getOptionStringValueByName(name).orElse(null);
+    protected String getValue(SlashCommandInteractionOptionsProvider interaction) {
+        return interaction.getOptionStringValueByName(name).orElse(null);
     }
 
 }

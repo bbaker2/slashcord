@@ -1,17 +1,17 @@
 package com.bbaker.slashcord.handler.args;
 
 import org.javacord.api.entity.Mentionable;
-import org.javacord.api.interaction.SlashCommandInteraction;
+import org.javacord.api.interaction.SlashCommandInteractionOptionsProvider;
 
-public class MentionableOptionArgument extends AbstractOptionArgument {
+public class MentionableOptionArgument extends AbstractOptionArgument<Mentionable> {
 
     public MentionableOptionArgument(String name) {
         super(name);
     }
 
     @Override
-    public Mentionable apply(SlashCommandInteraction sci) {
-        return sci.getOptionMentionableValueByName(name).orElse(null);
+    protected Mentionable getValue(SlashCommandInteractionOptionsProvider interaction) {
+        return interaction.getOptionMentionableValueByName(name).orElse(null);
     }
 
 }

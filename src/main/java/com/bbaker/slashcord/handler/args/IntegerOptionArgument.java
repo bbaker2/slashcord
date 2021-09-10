@@ -1,8 +1,8 @@
 package com.bbaker.slashcord.handler.args;
 
-import org.javacord.api.interaction.SlashCommandInteraction;
+import org.javacord.api.interaction.SlashCommandInteractionOptionsProvider;
 
-public class IntegerOptionArgument extends AbstractOptionArgument {
+public class IntegerOptionArgument extends AbstractOptionArgument<Integer> {
 
 
     public IntegerOptionArgument(String name) {
@@ -10,8 +10,8 @@ public class IntegerOptionArgument extends AbstractOptionArgument {
     }
 
     @Override
-    public Integer apply(SlashCommandInteraction sci) {
-        return sci.getOptionIntValueByName(name).orElse(null);
+    protected Integer getValue(SlashCommandInteractionOptionsProvider interaction) {
+        return interaction.getOptionIntValueByName(name).orElse(null);
     }
 
 }
