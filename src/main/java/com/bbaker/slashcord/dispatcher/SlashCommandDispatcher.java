@@ -11,14 +11,14 @@ import com.bbaker.slashcord.handler.SlashCommandListener;
 import com.bbaker.slashcord.structure.SlashCommandRegister;
 import com.bbaker.slashcord.structure.entity.Command;
 
-public class SlashComandDispatcher {
+public class SlashCommandDispatcher {
 
     DiscordApi api;
     private static SlashCommandListener listener = null;
     List<Object> queuedCommands = new ArrayList<>();
 
 
-    public SlashComandDispatcher queue(Object... cmd) {
+    public SlashCommandDispatcher queue(Object... cmd) {
         for(Object each : cmd) {
             queuedCommands.add(each);
         }
