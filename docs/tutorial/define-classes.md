@@ -7,97 +7,104 @@ Commands in discords have 3 main parts:
 ## Define the base command
 All commands need a name and description
 ```java
-Command fizzBuzzCmd = new Command("fizzbuzz", "Prints 'foo' if divisible by 3, and prints 'bar' if divisible by 5");
+Command fizzBuzzCmd = new CommandTierI("ping", "Will Ping");
 ```
+The Command object must be implemented by one of three classes:
+CommandTierI | The simplest command that only supports [user-inputted options](#basic-options)
+CommandTierII | Supports commands with sub-commands. See [Sub Command](#sub-commands) for usage
+CommandTierIII | Supports commands with groups. See [Command Groups](#command-groups) for usage
+
+
 ## Define the options
 It is recommended that you read the official Discord API docs for [options](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure) and [sub commands/groups](https://discord.com/developers/docs/interactions/application-commands#subcommands-and-subcommand-groups)
 And since this is a wrapper around Javacord, it would be wise to review the [wiki related to commands](https://javacord.org/wiki/basic-tutorials/interactions/commands.html)
 ### Basic Options
-A basic option is [anything that is SUB_COMMAND or a SUB_COMMAND_GROUP](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-type). 
-To specify the type you want your option to be, we use the [SlashCommandOptionType](https://github.com/Javacord/Javacord/blob/v3.3.2/javacord-api/src/main/java/org/javacord/api/interaction/SlashCommandOptionType.java) enum from Javacord.
-Each option needs a name, description, and type. Optionally, you can declare that the option is required or not. (Defaults to *not* required)
+A basic option is [anything that is *not* a SUB_COMMAND or a SUB_COMMAND_GROUP](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-type). 
+All basic options extend the `InputOption` class. 
+Each option needs a name, description, and wither or not the option is required.
 ```java
-Command fizzBuzzCmd = new Command("fizzbuzz", "Prints 'foo' if divisible by 3, and prints 'bar' if divisible by 5");
-Option number = new Option("number", "Any whole number", INTEGER, false);
-fizzBuzz.addOption(number);
+InputOption intOption = new IntOption("number", "Any whole number", true);
+Command fizzBuzzCmd = new CommandTierI("fizzbuzz", "Fizz if divisible by 3, Buzz if divisible by 5")
+    .addOption(intOption));
 ```
-**Note:** `Option` can only be a child of the `Command` or `SubCommand`
+We are limited to what javacord can support, so the following basic options exist:
+Class | Description | Supports Choices?
+----- | ----------- | -----------------
+StringOption | String Values | yes
+IntOption | For both [INTEGER and DOUBLE](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-type) | yes
+BooleanOption | Boolean Values | no
+UserOption | For referencing a User | no
+ChanelOption | For referencing a text channel, voice channel, or channel category | no
+RoleOption | For referencing a role in a given server | no
+MentionalbleOption | For referencing a user, role, text channel, voice channel, or channel category | no
+**Note:** `InputOption` can only be a child of the `CommandTierI` or `SubOption`
+### Choices
+wip
 ### Sub Commands
-Sub Commands are a special type of option that can ONLY be a child of a `Command` or `CommandGroup`. 
-Its child options can only be `Option`
+The `SubOption` are a special type of option that can ONLY be a child of a `CommandTierII` or `SubGroup`. 
+Its child options can only be `InputOption`
 ```java
-Command role = new Command("role", "Assign or remove yourself from a role");
-Option roleOption = new Option("role", "Pick a role", ROLE, true); // you are allowed to "reuse" an option
-
-Option add = new SubCommand("add", "Add yourself to a role");
-add.addOption(roleOption);
-
-Option remove = new SubCommand("remove", "Remove yourself from a role");
-remove.addOption(roleOption);
-
-role.addOption(add, remove); // addOption() is a vararg, hence the multiple arguments here
+CommandTierII quote = new CommandTierII("quote", "For quoting funny things in the server");
+quote.addOption(
+    new SubOption("add", "Add a quote").addOptions(
+        new StringOption("quote", "The quote itself",    true),
+        new UserOption(  "user",  "Who said the quote?", false)
+    ),
+    new SubOption("random", "Output a random quote")
+);
 ```
 ### Command Groups
-Command Groups are a special type of option that can ONLY be a child of a `Command`. 
+`GroupOption` are a special type of option that can ONLY be a child of a `CommandTierIII`. 
 ```java
-Command msgModCmd = new Command("message-mods", "Inform the server mods");
+CommandTierIII mod = new CommandTierIII("mod",      "Useful commands for the server mods");
+InputOption user    = new UserOption("user",        "The target user",      true);
+InputOption channel = new ChannelOption("channel",  "The target channel",   true);
+InputOption role    = new RoleOption("role",        "The target role",      true);
 
-Option details = new Option("comment", "Please describe the incident", STRING, true);
-Option user    = new Option("user", "The user involved", USER, true);
-Option channel = new Option("channel", "The channel involved", CHANNEL, true);
-
-// group 1
-CommandGroup reportUser = new CommandGroup("report-user", "Report a user");
-    // the addOptions() also returns itself, so you can treat it like a builder pattern
-    SubCommand spamming = new SubCommand("spamming","Too much irrelevant or unwanted content").addOption(user, details); 
-    SubCommand racism   = new SubCommand("racism",  "Negative comments based on skin, religion, or nationality").addOption(user, details);
-    SubCommand sexism   = new SubCommand("sexism",  "Negative comments based on gender. Includes homophobia").addOption(user, details);
-    SubCommand other    = new SubCommand("other",   "Anything that cannot be categorized as racism, sexism, or spamming").addOption(user, details);
-reportUser.addOption(spamming, racism, sexism, other);
-
-// group 2
-CommandGroup channelRequest = new CommandGroup("channel-request", "If the channel is going to fast, you can request slow mode");
-    SubCommand slowMode     = new SubCommand("slow-mode", "To many people talking at once. Requesting Slow Mode for an hour").addOption(channel);
-    SubCommand updateTopic  = new SubCommand("update-topic", "The topic needs updating")
-        .addOption(channel, new Option("topic", "The new topic", STRING, true)); // just a fancy example of ad-hoc option creations
-    
-msgModCmd.addOption(reportUser, channelRequest);
+mod.addOption(
+    new GroupOption("add", "Append a role to a user, or a user to a channel")
+        .addOptions(new SubOption("role",    "Give a user a role")          .addOptions(user, role))
+        .addOptions(new SubOption("channel", "Add a user to a channel")     .addOptions(user, channel))
+);
+mod.addOption(
+    new GroupOption("remove", "Remove a role from a user, or a user from a channel")
+        .addOptions(new SubOption("role",    "Remove a role from a user")   .addOptions(user, role))
+        .addOptions(new SubOption("channel", "Remove a user from a channel").addOptions(user, channel))
+);
 ```
 ## Register/Update the commands
-A single class is responsible for taking instances of `Command` and upserting them to Discord. This operations usually happens during initial creations and after the dev makes changes to a command.
-You always need to start by retrieving any pre-existing commands that the bot may have access to already. See the [official documentation in javacord's wiki](https://javacord.org/wiki/basic-tutorials/interactions/commands.html#get-your-commands) for the best way to accomplish this.
+The `SlashCommandRegister` is in charge of creating and updating commands. 
+Calling the `.queue(Command)` method only prepares the command to be sent to Discord. You still need to call the `.upsert(DiscordApi)` method which will:
+1. Query for pre-existing commands
+2. Compare the pre-existing commands against what was queued
+3. Any commands with a similar name but different descriptions, options, or choices will be updated
+4. Any commands not already in Discord will be created
+
+**Note:** This will not remove any commands. Only update and insert. 
 
 ### Global Commands
 ```java
-DiscordApi api; // previously initialized somehow
-List<SlashCommand> existingGlobal = api.getGlobalSlashCommands().join();
+DiscordApi api = getApiSomehow();
 
-// prepare the list of commands to send to Discord
-SlashCommandRegister cmdRegister = new SlashCommandRegister(existingGlobal);
-cmdRegister.queue(fizzBuzzCmd); // supports varargs
-List<SlashCommandBuilder> toUpsert = cmdRegister.upserts();
-
-// there is a chance that toUpsert will be empty
-// IFF discord already has the commands as-is
-if(!toUpsert.isEmpty()){
-    api.bulkOverwriteGlobalSlashCommands(toUpsert); // actually sends the commands to Discord
-}
+SlashCommandRegister registry = new SlashCommandRegister();
+registry.queue(createPingPong());
+registry.queue(createFizzBuzzCommand());
+registry.queue(createModsCommand());
+registry.queue(createQuoteCommand());
+registry.upsert(api);   // you can call safely call this method multiple times. 
+                        // It will only make changes if a difference is detected
 ```
 ### Server Commands
 ```java
-DiscordApi api; // previously initialized somehow
-Server server; // previously retrieved somehow
+DiscordApi api = getApiSomehow();
+Server serverA = getSomeServer();
+Server serverB = getADifferentServer();
 
-List<SlashCommand> existingServer = api.getServerSlashCommands(server).join();
-
-// prepare the list of commands to send to Discord
-SlashCommandRegister cmdRegister = new SlashCommandRegister(existingServer);
-cmdRegister.queue(rollCmd, msgModCmd); // supports varargs
-List<SlashCommandBuilder> toUpsert = cmdRegister.upserts();
-
-// there is a chance that toUpsert will be empty
-// IFF discord already has the commands as-is
-if(!toUpsert.isEmpty()){
-    api.bulkOverwriteServerSlashCommands(server, toUpsert); // actually sends the commands to Discord, for the given server
-}
+SlashCommandRegister registry = new SlashCommandRegister();
+registry.queue(createPingPong());                       // global
+registry.queue(createFizzBuzzCommand(), serverA);       // created for serverA only
+registry.queue(createModsCommand(), serverB);           // created for serverB only
+registry.queue(createQuoteCommand(), serverA, serverB); // created for both server A and B
+registry.upsert(api);   // you can call safely call this method multiple times. 
+                        // It will only make changes if a difference is detected
 ```
