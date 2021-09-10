@@ -1,4 +1,4 @@
-package com.bbaker.slashcord;
+package com.bbaker.slashcord.examples;
 
 import com.bbaker.slashcord.handler.annotation.Slash;
 import com.bbaker.slashcord.handler.annotation.SlashOption;
