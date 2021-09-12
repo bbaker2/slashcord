@@ -35,6 +35,7 @@ dependencies {
 For creating and updating commands, see
 * [Managing Commands via Objects](tutorial/define-classes.md)
 * [Managing Commands via Annotations](tutorial/define-annotations.md)
+
 For responding to your commands, see
 * [Command Listeners](tutorial/respond.md)
 
@@ -42,4 +43,5 @@ It is also worth checking out [SlashCommandDispatcher](tutorial/slashcommanddisp
 
 # References
 * [Javacord](https://github.com/Javacord/Javacord)
+* [Javacord Tutorals](https://javacord.org/wiki/basic-tutorials/interactions/commands.html)
 * [Discord APIs for slash commands](https://discord.com/developers/docs/interactions/application-commands)
