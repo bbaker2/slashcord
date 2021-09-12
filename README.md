@@ -10,4 +10,6 @@ This library accomplishes two tasks:
 
 This library separates the above functionalities so you can use this library to *just* create/update commands or *just* handle/respond to commands.
 
+[![](https://jitpack.io/v/bbaker2/slashcord.svg)](https://jitpack.io/#bbaker2/slashcord)
+
 See the [wiki page](https://bbaker2.github.io/slashcord/) for detailed instructions on how to use this library
