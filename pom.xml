@@ -5,35 +5,8 @@
   <groupId>bbaker.discord.slashcord</groupId>
   <artifactId>slashcord</artifactId>
   <version>1.0.0-SNAPSHOT</version>
-
-  <build>
-    <plugins>
-      <!-- The JavaDocs -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.10.3</version>
-      </plugin>
-
-      <!-- Maven shade plugin -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>2.4.3</version>
-        <configuration>
-          <shadedArtifactAttached>true</shadedArtifactAttached>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+  <name>javacord</name>
+  <description>A helper library for managing slash commands using javacord</description>
 
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -88,4 +61,60 @@
     </dependency>
 
   </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Maven shade plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.4.3</version>
+        <configuration>
+          <shadedArtifactAttached>true</shadedArtifactAttached>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Include source -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.0.4</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Include JavaDocs -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.2</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <stylesheet>java</stylesheet>
+          <source>8</source>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
