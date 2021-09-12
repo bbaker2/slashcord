@@ -24,7 +24,7 @@ It is also worth checking out [SlashCommandDispatcher](tutorial/slashcommanddisp
 <dependency>
     <groupId>com.github.bbaker2</groupId>
     <artifactId>slashcord</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.3</version>
 </dependency>
 ```
 ## Gradle
@@ -37,7 +37,7 @@ allprojects {
 }
 
 dependencies {
-        implementation 'com.github.bbaker2:slashcord:Tag'
+        implementation 'com.github.bbaker2:slashcord:0.1.3'
 }
 
 ```

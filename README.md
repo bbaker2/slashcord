@@ -25,7 +25,7 @@ This library separates the above functionalities so you can use this library to 
 <dependency>
     <groupId>com.github.bbaker2</groupId>
     <artifactId>slashcord</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.3</version>
 </dependency>
 ```
 ## Gradle
