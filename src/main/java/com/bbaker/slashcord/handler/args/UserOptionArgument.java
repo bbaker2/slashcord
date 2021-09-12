@@ -17,7 +17,7 @@ public class UserOptionArgument extends AbstractOptionArgument<User> {
     protected User getValue(SlashCommandInteractionOptionsProvider interaction) {
         // check to see if the option exists at all
         Optional<SlashCommandInteractionOption> unsafeOption = interaction.getOptionByName(name);
-        if(unsafeOption.isEmpty()) {
+        if(!unsafeOption.isPresent()) {
             return null;
         }
 
