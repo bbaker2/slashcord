@@ -95,6 +95,7 @@ registry.upsert(api);   // you can call safely call this method multiple times.
                         // It will only make changes if a difference is detected
 ```
 ### Server Commands
+** Server commands are not supported yet, but will eventually look like this:**
 ```java
 DiscordApi api = getApiSomehow();
 Server serverA = getSomeServer();
