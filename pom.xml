@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>bbaker.discord.slashcord</groupId>
   <artifactId>slashcord</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>0.1.0-SNAPSHOT</version>
   <name>javacord</name>
   <description>A helper library for managing slash commands using javacord</description>
 
