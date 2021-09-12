@@ -1,5 +1,6 @@
 package com.bbaker.slashcord.handler.args;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.javacord.api.interaction.SlashCommandInteraction;
@@ -16,15 +17,22 @@ public abstract class AbstractOptionArgument<T> implements Function<SlashCommand
 
     @Override
     public Object apply(SlashCommandInteraction sci) {
-        SlashCommandInteractionOption level1 = sci.getFirstOption().get();
+        Optional<SlashCommandInteractionOption> first = sci.getFirstOption();
+        if(!first.isPresent()) {
+            return null;
+        }
+        SlashCommandInteractionOption level1 = first.get();
         if(level1.isSubcommandOrGroup()) {
-            if(level1.getFirstOption().isPresent()) {
-                SlashCommandInteractionOption level2 = level1.getFirstOption().get();
+            Optional<SlashCommandInteractionOption> second = level1.getFirstOption();
+            if(second.isPresent()) {
+                SlashCommandInteractionOption level2 = second.get();
                 if(level2.isSubcommandOrGroup()) {
                     return getValue(level2);
                 }
+                return getValue(level1);
+            } else {
+                return null;
             }
-            return getValue(level1);
         }
         return getValue(sci);
     }
