@@ -22,7 +22,6 @@ public MessageBuilder sayHello(){
 ```
 **Note:** The `MessageBuilder` doesn't actually support `String.valueOf(Object)` but some special logic was introduced to support this. A standard message will be sent to the channel but a "success" hidden message will be returned to the calling user.
 **Warning:** `MessageBuilder` might be removed after beta. This has some weird interactions that I don't like
-```
 ```java
 @SlashCommand(command = "say-hello")
 public void sayHello(@SlashMeta SlashCommandInteraction interaction){

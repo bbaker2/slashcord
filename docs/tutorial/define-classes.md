@@ -28,6 +28,7 @@ Command fizzBuzzCmd = new CommandTierI("fizzbuzz", "Fizz if divisible by 3, Buzz
     .addOption(intOption));
 ```
 We are limited to what javacord can support, so the following basic options exist:
+
 Class | Description | Supports Choices?
 ----- | ----------- | -----------------
 StringOption | String Values | yes
@@ -37,6 +38,7 @@ UserOption | For referencing a User | no
 ChanelOption | For referencing a text channel, voice channel, or channel category | no
 RoleOption | For referencing a role in a given server | no
 MentionalbleOption | For referencing a user, role, text channel, voice channel, or channel category | no
+
 **Note:** `InputOption` can only be a child of the `CommandTierI` or `SubOption`
 ### Choices
 wip
