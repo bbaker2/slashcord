@@ -1,5 +1,8 @@
 package com.bbaker.slashcord.examples;
 
+import static org.javacord.api.interaction.SlashCommandOptionType.STRING;
+import static org.javacord.api.interaction.SlashCommandOptionType.USER;
+
 import java.util.Random;
 
 import org.javacord.api.entity.message.MessageFlag;
@@ -8,7 +11,28 @@ import org.javacord.api.interaction.callback.InteractionImmediateResponseBuilder
 
 import com.bbaker.slashcord.handler.annotation.Slash;
 import com.bbaker.slashcord.handler.annotation.SlashOption;
+import com.bbaker.slashcord.structure.annotation.CommandDef;
+import com.bbaker.slashcord.structure.annotation.OptionDef;
+import com.bbaker.slashcord.structure.annotation.SubCommandDef;
 
+@SubCommandDef(
+    name = "quote",
+    description = "For quoting funny things in the server",
+    subs = {
+        @CommandDef(
+            name = "add",
+            description = "Add a quote",
+            options = {
+                @OptionDef(name = "quote", description = "The quote itself",   type = STRING ,required = true),
+                @OptionDef(name = "user",  description = "Who said the quote", type = USER, required = false)
+            }
+        ),
+        @CommandDef(
+            name = "random",
+            description = "Output a random quote"
+        )
+    }
+)
 public class QuoteCommand {
 
     @Slash( command = "quote", sub = "add")
