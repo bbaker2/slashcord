@@ -7,7 +7,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.bbaker.slashcord.structure.entity.CommandTierII;
+import com.bbaker.slashcord.structure.entity.SubCommand;
 
 @Retention(RUNTIME)
 @Target({ANNOTATION_TYPE, TYPE})
@@ -16,7 +16,15 @@ public @interface SubCommandDef {
     String name() default "";
     String description() default "";
     CommandDef[] subs() default {};
-    Class<? extends CommandTierII> value() default CommandTierII.class;
+    Class<? extends SubCommand> value() default DefaultSubCommand.class;
+
+    static class DefaultSubCommand extends SubCommand {
+
+        private DefaultSubCommand() {
+            super("default", "default");
+        }
+
+    }
 
 
 }

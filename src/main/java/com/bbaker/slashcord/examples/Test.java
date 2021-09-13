@@ -4,46 +4,78 @@ import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 
 import com.bbaker.slashcord.dispatcher.SlashCommandDispatcher;
+import com.bbaker.slashcord.structure.annotation.CommandDef;
+import com.bbaker.slashcord.structure.annotation.GroupCommandDef;
+import com.bbaker.slashcord.structure.annotation.SubCommandDef;
 import com.bbaker.slashcord.structure.entity.ChannelOption;
 import com.bbaker.slashcord.structure.entity.Command;
-import com.bbaker.slashcord.structure.entity.CommandTierI;
-import com.bbaker.slashcord.structure.entity.CommandTierII;
-import com.bbaker.slashcord.structure.entity.CommandTierIII;
+import com.bbaker.slashcord.structure.entity.GroupCommand;
 import com.bbaker.slashcord.structure.entity.GroupOption;
 import com.bbaker.slashcord.structure.entity.InputOption;
 import com.bbaker.slashcord.structure.entity.IntOption;
+import com.bbaker.slashcord.structure.entity.RegularCommand;
 import com.bbaker.slashcord.structure.entity.RoleOption;
 import com.bbaker.slashcord.structure.entity.StringOption;
+import com.bbaker.slashcord.structure.entity.SubCommand;
 import com.bbaker.slashcord.structure.entity.SubOption;
 import com.bbaker.slashcord.structure.entity.UserOption;
+import com.bbaker.slashcord.util.BadAnnotation;
+import com.bbaker.slashcord.util.ConverterUtil;
 
 public class Test {
 
     public static void main(String...args) {
 
-        DiscordApi api = new DiscordApiBuilder().setToken(args[0]).login().join();
+        Class<?>[] all = new Class[] {PingPongCommand.class, FizzBuzz.class, QuoteCommand.class, ModCommand.class};
 
+        for(Class<?> clazz : all) {
+            try {
+                GroupCommandDef group = clazz.getAnnotation(GroupCommandDef.class);
+                if(group != null) {
+                    Command cmd = ConverterUtil.from(group);
+                    System.out.println(cmd);
+                }
+
+                SubCommandDef sub = clazz.getAnnotation(SubCommandDef.class);
+                if(sub != null) {
+                    Command cmd = ConverterUtil.from(sub);
+                    System.out.println(cmd);
+                }
+
+                CommandDef reg = clazz.getAnnotation(CommandDef.class);
+                if(reg != null) {
+                    Command cmd = ConverterUtil.from(reg);
+                    System.out.println(cmd);
+                }
+            } catch (BadAnnotation e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(true) return;
+
+        DiscordApi api = new DiscordApiBuilder().setToken(args[0]).login().join();
         SlashCommandDispatcher dispatcher = new SlashCommandDispatcher(api);
         dispatcher.queue(createPingPong(), 			new PingPongCommand());
         dispatcher.queue(createFizzBuzzCommand(), 	new FizzBuzz());
         dispatcher.queue(createModsCommand(),		new QuoteCommand());
         dispatcher.queue(createQuoteCommand(), 		new ModCommand());
-        dispatcher.submit().join();
+        //dispatcher.submit().join();
     }
 
     public static Command createPingPong() {
-        return new CommandTierI("ping", "Will Ping");
+        return new RegularCommand("ping", "Will Ping");
     }
 
     public static Command createFizzBuzzCommand() {
-         return new CommandTierI("fizzbuzz", "Fizz if divisible by 3, Buzz if divisible by 5")
+         return new RegularCommand("fizzbuzz", "Fizz if divisible by 3, Buzz if divisible by 5")
              .addOption(
                  new IntOption("number", "Any whole number", true)
          );
     }
 
     public static Command createQuoteCommand() {
-        CommandTierII quote = new CommandTierII("quote", "For quoting funny things in the server");
+        SubCommand quote = new SubCommand("quote", "For quoting funny things in the server");
         quote.addOption(
             new SubOption("add", "Add a quote").addOptions(
                 new StringOption("quote", "The quote itself", true),
@@ -57,7 +89,7 @@ public class Test {
 
 
     public static Command createModsCommand() {
-        CommandTierIII mod = new CommandTierIII("mod", 		"Useful commands for the server mods");
+        GroupCommand mod = new GroupCommand("mod", 		"Useful commands for the server mods");
         InputOption user    = new UserOption("user", 		"The target user", 		true);
         InputOption channel = new ChannelOption("channel", 	"The target channel", 	true);
         InputOption role    = new RoleOption("role", 		"The target role", 		true);

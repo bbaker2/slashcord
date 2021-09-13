@@ -54,8 +54,8 @@ public class Command {
             sb.append(System.lineSeparator());
             sb.append(
                 getOptions().stream()
-                    .map(Option::toString)
-                    .collect(joining(System.lineSeparator() + "  "))
+                    .map(o -> o.toString("  "))
+                    .collect(joining(System.lineSeparator()))
             );
         }
         return sb.toString();

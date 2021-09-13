@@ -106,21 +106,21 @@ public class ModCommand {
         return "Removing " + user.getName() + " from " + channel.getName();
     }
 
-    private class User extends UserOption {
+    public static class User extends UserOption {
         // MUST SUPPORT DEFAULT CONSTRUCTOR FOR THIS TO WORK
         public User() {
             super(USER_OPT, "The target user", true);
         }
     }
 
-    private class Role extends RoleOption {
+    public static class Role extends RoleOption {
         // MUST SUPPORT DEFAULT CONSTRUCTOR FOR THIS TO WORK
         public Role() {
             super(ROLE_OPT, "The target role", true);
         }
     }
 
-    private class Channel extends ChannelOption {
+    public static class Channel extends ChannelOption {
         // MUST SUPPORT DEFAULT CONSTRUCTOR FOR THIS TO WORK
         public Channel() {
             super(CHANNEL_OPT, "The target channel", true);

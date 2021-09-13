@@ -1,7 +1,7 @@
 package com.bbaker.slashcord.structure.annotation;
 
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.*;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -15,6 +15,12 @@ public @interface ChoiceDef {
     String name() default "";
     String strVal() default "";
     int intVal() default 0;
-    Class<? extends Choice> value() default Choice.class;
+    Class<? extends Choice> value() default DefaultChoice.class;
+
+    static class DefaultChoice extends Choice {
+
+        private DefaultChoice() { }
+
+    }
 
 }

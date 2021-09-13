@@ -1,7 +1,7 @@
 package com.bbaker.slashcord.structure.annotation;
 
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.*;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -19,6 +19,12 @@ public @interface OptionDef {
     SlashCommandOptionType type() default SlashCommandOptionType.STRING;
     boolean required() default false;
     ChoiceDef[] choices() default {};
-    Class<? extends InputOption> value() default InputOption.class;
+    Class<? extends InputOption> value() default DefaultOption.class;
+
+    static class DefaultOption extends InputOption {
+        private DefaultOption() {
+            super("default", "default", false, SlashCommandOptionType.STRING);
+        }
+    }
 
 }

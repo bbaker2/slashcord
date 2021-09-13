@@ -76,24 +76,29 @@ public class Option {
 
     @Override
     public String toString() {
+        return toString("");
+    }
+
+    public String toString(String leftPad) {
         StringBuilder sb = new StringBuilder();
-        sb.append(format("%s (%s, %b)", getName(), getType(), isRequired()));
+        sb.append(format("%s%s (%s, %b)", leftPad, getName(), getType(), isRequired()));
 
         if(getChoices() != null && !getChoices().isEmpty()) {
-            sb.append(System.lineSeparator());
+            sb.append(" [");
             sb.append(
                 getChoices().stream()
                     .map(Choice::toString)
                     .collect(joining(", "))
             );
+            sb.append("]");
         }
 
         if(getOptions() != null && !getOptions().isEmpty()) {
             sb.append(System.lineSeparator());
             sb.append(
                 getOptions().stream()
-                    .map(Option::getName)
-                    .collect(joining(", "))
+                    .map(o -> o.toString(leftPad + "  "))
+                    .collect(joining(System.lineSeparator()))
             );
         }
         return sb.toString();
