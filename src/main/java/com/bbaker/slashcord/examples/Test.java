@@ -4,9 +4,6 @@ import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 
 import com.bbaker.slashcord.dispatcher.SlashCommandDispatcher;
-import com.bbaker.slashcord.structure.annotation.CommandDef;
-import com.bbaker.slashcord.structure.annotation.GroupCommandDef;
-import com.bbaker.slashcord.structure.annotation.SubCommandDef;
 import com.bbaker.slashcord.structure.entity.ChannelOption;
 import com.bbaker.slashcord.structure.entity.Command;
 import com.bbaker.slashcord.structure.entity.GroupCommand;
@@ -19,48 +16,17 @@ import com.bbaker.slashcord.structure.entity.StringOption;
 import com.bbaker.slashcord.structure.entity.SubCommand;
 import com.bbaker.slashcord.structure.entity.SubOption;
 import com.bbaker.slashcord.structure.entity.UserOption;
-import com.bbaker.slashcord.util.BadAnnotation;
-import com.bbaker.slashcord.util.ConverterUtil;
 
 public class Test {
 
     public static void main(String...args) {
-
-        Class<?>[] all = new Class[] {PingPongCommand.class, FizzBuzz.class, QuoteCommand.class, ModCommand.class};
-
-        for(Class<?> clazz : all) {
-            try {
-                GroupCommandDef group = clazz.getAnnotation(GroupCommandDef.class);
-                if(group != null) {
-                    Command cmd = ConverterUtil.from(group);
-                    System.out.println(cmd);
-                }
-
-                SubCommandDef sub = clazz.getAnnotation(SubCommandDef.class);
-                if(sub != null) {
-                    Command cmd = ConverterUtil.from(sub);
-                    System.out.println(cmd);
-                }
-
-                CommandDef reg = clazz.getAnnotation(CommandDef.class);
-                if(reg != null) {
-                    Command cmd = ConverterUtil.from(reg);
-                    System.out.println(cmd);
-                }
-            } catch (BadAnnotation e) {
-                e.printStackTrace();
-            }
-        }
-
-        if(true) return;
-
         DiscordApi api = new DiscordApiBuilder().setToken(args[0]).login().join();
         SlashCommandDispatcher dispatcher = new SlashCommandDispatcher(api);
-        dispatcher.queue(createPingPong(), 			new PingPongCommand());
-        dispatcher.queue(createFizzBuzzCommand(), 	new FizzBuzz());
-        dispatcher.queue(createModsCommand(),		new QuoteCommand());
-        dispatcher.queue(createQuoteCommand(), 		new ModCommand());
-        //dispatcher.submit().join();
+        dispatcher.queue(new PingPongCommand());
+        dispatcher.queue(new FizzBuzz());
+        dispatcher.queue(new QuoteCommand());
+        dispatcher.queue(new ModCommand());
+        dispatcher.submit().join();
     }
 
     public static Command createPingPong() {

@@ -2,6 +2,7 @@ package com.bbaker.slashcord.structure;
 
 import static com.bbaker.slashcord.util.ConverterUtil.from;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,17 +14,53 @@ import org.javacord.api.interaction.SlashCommand;
 import org.javacord.api.interaction.SlashCommandBuilder;
 import org.javacord.api.interaction.SlashCommandUpdater;
 
+import com.bbaker.slashcord.structure.annotation.CommandDef;
+import com.bbaker.slashcord.structure.annotation.GroupCommandDef;
+import com.bbaker.slashcord.structure.annotation.SubCommandDef;
 import com.bbaker.slashcord.structure.entity.Command;
+import com.bbaker.slashcord.util.BadAnnotation;
 import com.bbaker.slashcord.util.ConverterUtil;
+import com.bbaker.slashcord.util.ThrowableFunction;
 
 public class SlashCommandRegister {
 
     List<Command> queued = new ArrayList<>();
 
-    public SlashCommandRegister queue(Command command) {
-        queued.add(command);
+    public SlashCommandRegister queue(Object command) {
+        // Anything that is already a command gets
+        // to be queued instantly
+        if(command instanceof Command) {
+            queued.add((Command)command);
+        }
+
+        // then scan for annotation
+        scanAndQueue(CommandDef.class, 		command, ConverterUtil::from);
+        scanAndQueue(SubCommandDef.class, 	command, ConverterUtil::from);
+        scanAndQueue(GroupCommandDef.class, command, ConverterUtil::from);
+
         return this;
     }
+
+    private <T extends Annotation> void scanAndQueue(Class<T> anotation, Object instance, ThrowableFunction<T, Command, BadAnnotation> converter){
+        T cmdDef = instance.getClass().getAnnotation(anotation); // Grab the annotation, if any exist
+
+        // if not exist, short circuit
+        if(cmdDef == null) {
+            return;
+        }
+
+        // if one does exist, attempt to convert it into the Command class
+        try {
+            Command cmd = converter.apply(cmdDef);
+            queued.add(cmd);
+        } catch (BadAnnotation e) {
+            // If there are failures... suppress the exception
+            // and short circuit
+            e.printStackTrace();
+            return;
+        }
+    }
+
 
     public CompletableFuture<List<SlashCommand>> upsert(DiscordApi api){
         Upsert prepared = previewInsert(api);
