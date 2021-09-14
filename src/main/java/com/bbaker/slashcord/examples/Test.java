@@ -2,25 +2,47 @@ package com.bbaker.slashcord.examples;
 
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
+import org.javacord.api.event.interaction.SlashCommandCreateEvent;
 
 import com.bbaker.slashcord.dispatcher.SlashCommandDispatcher;
-import com.bbaker.slashcord.structure.entity.ChannelOption;
+import com.bbaker.slashcord.handler.SlashCommandListener;
+import com.bbaker.slashcord.handler.annotation.Slash;
+import com.bbaker.slashcord.structure.SlashCommandRegister;
+import com.bbaker.slashcord.structure.annotation.CommandDef;
+import com.bbaker.slashcord.structure.annotation.GroupCommandDef;
+import com.bbaker.slashcord.structure.annotation.SubCommandDef;
 import com.bbaker.slashcord.structure.entity.Command;
-import com.bbaker.slashcord.structure.entity.GroupCommand;
-import com.bbaker.slashcord.structure.entity.GroupOption;
-import com.bbaker.slashcord.structure.entity.InputOption;
-import com.bbaker.slashcord.structure.entity.IntOption;
-import com.bbaker.slashcord.structure.entity.RegularCommand;
-import com.bbaker.slashcord.structure.entity.RoleOption;
-import com.bbaker.slashcord.structure.entity.StringOption;
-import com.bbaker.slashcord.structure.entity.SubCommand;
-import com.bbaker.slashcord.structure.entity.SubOption;
-import com.bbaker.slashcord.structure.entity.UserOption;
 
 public class Test {
 
     public static void main(String...args) {
         DiscordApi api = new DiscordApiBuilder().setToken(args[0]).login().join();
+
+        // just creating/updating commands
+        registerWithClasses(api);
+        registerWithAnnotations(api);
+
+        // just responding to commands
+        registerWithAnnotations(api);
+
+        // for when you and to do both with one method call
+        everythingWithTheDispatcher(api);
+
+        // If you were to run this code, we would "register" the same command
+        // over and over. Slashcord is actually smart enough to skip redundant
+        // updates and will not double-respond to method handlers.
+
+        // We went out of our way to make this library abuse proof
+
+    }
+
+    /**
+     * The {@link SlashCommandDispatcher} does everything that {@link SlashCommandRegister} and
+     * {@link SlashCommandListener} does. But as one useful class. If you're not sure which approach
+     * to use, use this {@link SlashCommandDispatcher}.
+     * @param api a live instance of Discord
+     */
+    public static void everythingWithTheDispatcher(DiscordApi api) {
         SlashCommandDispatcher dispatcher = new SlashCommandDispatcher(api);
         dispatcher.queue(new PingPongCommand());
         dispatcher.queue(new FizzBuzz());
@@ -29,49 +51,52 @@ public class Test {
         dispatcher.submit().join();
     }
 
-    public static Command createPingPong() {
-        return new RegularCommand("ping", "Will Ping");
+    /**
+     * This shows some static methods returning instances of the {@link Command}
+     * class. Which is a pre-prepared in-memory command definition.
+     * @param api a live instance of Discord
+     */
+    public static void registerWithClasses(DiscordApi api) {
+        SlashCommandRegister register = new SlashCommandRegister();
+        register.queue(PingPongCommand.createPingPongDef());
+        register.queue(FizzBuzz.createFizzBuzzCommand());
+        register.queue(QuoteCommand.createQuoteCommand());
+        register.queue(ModCommand.createModsCommand());
+        register.upsert(api).join();
     }
 
-    public static Command createFizzBuzzCommand() {
-         return new RegularCommand("fizzbuzz", "Fizz if divisible by 3, Buzz if divisible by 5")
-             .addOption(
-                 new IntOption("number", "Any whole number", true)
-         );
+    /**
+     * These classes are scanned for instances of {@link CommandDef},
+     * {@link SubCommandDef}, and {@link GroupCommandDef} annotation
+     * @param api a live instance of Discord
+     */
+    public static void registerWithAnnotations(DiscordApi api) {
+
+        SlashCommandRegister register = new SlashCommandRegister();
+        register.queue(new PingPongCommand());
+        register.queue(new FizzBuzz());
+        register.queue(new QuoteCommand());
+        register.queue(new ModCommand());
+        register.upsert(api).join();
+
     }
 
-    public static Command createQuoteCommand() {
-        SubCommand quote = new SubCommand("quote", "For quoting funny things in the server");
-        quote.addOption(
-            new SubOption("add", "Add a quote").addOptions(
-                new StringOption("quote", "The quote itself", true),
-                new UserOption("user", "Who said the quote?", false)
-            ),
-            new SubOption("random", "Output a random quote")
-        );
-
-        return quote;
+    /**
+     * These classes are scanned for instances of the {@link Slash} annotation
+     * which are used to handle the {@link SlashCommandCreateEvent}
+     * @param api a live instance of Discord
+     */
+    public static void respondeWithAnnotations(DiscordApi api) {
+        SlashCommandDispatcher dispatcher = new SlashCommandDispatcher(api);
+        dispatcher.queue(new PingPongCommand());
+        dispatcher.queue(new FizzBuzz());
+        dispatcher.queue(new QuoteCommand());
+        dispatcher.queue(new ModCommand());
+        dispatcher.submit().join();
     }
 
 
-    public static Command createModsCommand() {
-        GroupCommand mod = new GroupCommand("mod", 		"Useful commands for the server mods");
-        InputOption user    = new UserOption("user", 		"The target user", 		true);
-        InputOption channel = new ChannelOption("channel", 	"The target channel", 	true);
-        InputOption role    = new RoleOption("role", 		"The target role", 		true);
 
-        mod.addOption(
-            new GroupOption("add", "Append a role to a user, or a user to a channel")
-                .addOptions(new SubOption("role",    "Give a user a role")          .addOptions(user, role))
-                .addOptions(new SubOption("channel", "Add a user to a channel")     .addOptions(user, channel))
-        );
-        mod.addOption(
-            new GroupOption("remove", "Remove a role from a user, or a user from a channel")
-                .addOptions(new SubOption("role",    "Remove a role from a user")   .addOptions(user, role))
-                .addOptions(new SubOption("channel", "Remove a user from a channel").addOptions(user, channel))
-        );
 
-        return mod;
-    }
 
 }

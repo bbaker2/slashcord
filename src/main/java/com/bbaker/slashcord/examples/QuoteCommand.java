@@ -14,6 +14,11 @@ import com.bbaker.slashcord.handler.annotation.SlashOption;
 import com.bbaker.slashcord.structure.annotation.CommandDef;
 import com.bbaker.slashcord.structure.annotation.OptionDef;
 import com.bbaker.slashcord.structure.annotation.SubCommandDef;
+import com.bbaker.slashcord.structure.entity.Command;
+import com.bbaker.slashcord.structure.entity.StringOption;
+import com.bbaker.slashcord.structure.entity.SubCommand;
+import com.bbaker.slashcord.structure.entity.SubOption;
+import com.bbaker.slashcord.structure.entity.UserOption;
 
 @SubCommandDef(
     name = "quote",
@@ -64,6 +69,19 @@ public class QuoteCommand {
 
     private void storeAnonymousQuote(String quote) {
         // store to the database
+    }
+
+    public static Command createQuoteCommand() {
+        SubCommand quote = new SubCommand("quote", "For quoting funny things in the server");
+        quote.addOption(
+            new SubOption("add", "Add a quote").addOptions(
+                new StringOption("quote", "The quote itself", true),
+                new UserOption("user", "Who said the quote?", false)
+            ),
+            new SubOption("random", "Output a random quote")
+        );
+
+        return quote;
     }
 
 }

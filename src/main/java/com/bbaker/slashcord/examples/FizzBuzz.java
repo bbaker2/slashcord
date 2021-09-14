@@ -5,6 +5,9 @@ import com.bbaker.slashcord.handler.annotation.SlashOption;
 import com.bbaker.slashcord.structure.annotation.ChoiceDef;
 import com.bbaker.slashcord.structure.annotation.CommandDef;
 import com.bbaker.slashcord.structure.annotation.OptionDef;
+import com.bbaker.slashcord.structure.entity.Command;
+import com.bbaker.slashcord.structure.entity.IntOption;
+import com.bbaker.slashcord.structure.entity.RegularCommand;
 
 @CommandDef(
     name = "fizzbuzz",
@@ -37,5 +40,12 @@ public class FizzBuzz {
         }
         return sb.length() == 0 ? "No matches" : sb.toString();
     }
+
+    public static Command createFizzBuzzCommand() {
+        return new RegularCommand("fizzbuzz", "Fizz if divisible by 3, Buzz if divisible by 5")
+            .addOption(
+                new IntOption("number", "Any whole number", true)
+        );
+   }
 
 }

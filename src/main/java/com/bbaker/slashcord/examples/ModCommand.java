@@ -12,7 +12,12 @@ import com.bbaker.slashcord.structure.annotation.GroupCommandDef;
 import com.bbaker.slashcord.structure.annotation.OptionDef;
 import com.bbaker.slashcord.structure.annotation.SubCommandDef;
 import com.bbaker.slashcord.structure.entity.ChannelOption;
+import com.bbaker.slashcord.structure.entity.Command;
+import com.bbaker.slashcord.structure.entity.GroupCommand;
+import com.bbaker.slashcord.structure.entity.GroupOption;
+import com.bbaker.slashcord.structure.entity.InputOption;
 import com.bbaker.slashcord.structure.entity.RoleOption;
+import com.bbaker.slashcord.structure.entity.SubOption;
 import com.bbaker.slashcord.structure.entity.UserOption;
 
 /*
@@ -127,5 +132,25 @@ public class ModCommand {
         public MyChannelOption() {
             super(CHANNEL_OPT, "The target channel", true);
         }
+    }
+
+    public static Command createModsCommand() {
+        GroupCommand mod = new GroupCommand("mod", 		"Useful commands for the server mods");
+        InputOption user    = new MyUserOption();
+        InputOption channel = new MyChannelOption();
+        InputOption role    = new MyRoleOption();
+
+        mod.addOption(
+            new GroupOption("add", "Append a role to a user, or a user to a channel")
+                .addOptions(new SubOption("role",    "Give a user a role")          .addOptions(user, role))
+                .addOptions(new SubOption("channel", "Add a user to a channel")     .addOptions(user, channel))
+        );
+        mod.addOption(
+            new GroupOption("remove", "Remove a role from a user, or a user from a channel")
+                .addOptions(new SubOption("role",    "Remove a role from a user")   .addOptions(user, role))
+                .addOptions(new SubOption("channel", "Remove a user from a channel").addOptions(user, channel))
+        );
+
+        return mod;
     }
 }
