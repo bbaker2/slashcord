@@ -2,6 +2,8 @@ package com.bbaker.slashcord.examples;
 
 import org.javacord.api.entity.channel.ServerChannel;
 import org.javacord.api.entity.message.MessageBuilder;
+import org.javacord.api.entity.permission.Role;
+import org.javacord.api.entity.user.User;
 
 import com.bbaker.slashcord.handler.annotation.Slash;
 import com.bbaker.slashcord.handler.annotation.SlashOption;
@@ -32,16 +34,16 @@ import com.bbaker.slashcord.structure.entity.UserOption;
                     name = "role",
                     description = "Give a user a role",
                     options = {
-                        @OptionDef(ModCommand.User.class),
-                        @OptionDef(ModCommand.Role.class)
+                        @OptionDef(ModCommand.MyUserOption.class),
+                        @OptionDef(ModCommand.MyRoleOption.class)
                     }
                 ),
                 @CommandDef(
                     name = "channel",
                     description = "Add a user to a channel",
                     options = {
-                        @OptionDef(ModCommand.User.class),
-                        @OptionDef(ModCommand.Channel.class)
+                        @OptionDef(ModCommand.MyUserOption.class),
+                        @OptionDef(ModCommand.MyChannelOption.class)
                     }
                 )
             }
@@ -54,16 +56,16 @@ import com.bbaker.slashcord.structure.entity.UserOption;
                     name = "role",
                     description = "Remove a role from a user",
                     options = {
-                        @OptionDef(ModCommand.User.class),
-                        @OptionDef(ModCommand.Role.class)
+                        @OptionDef(ModCommand.MyUserOption.class),
+                        @OptionDef(ModCommand.MyRoleOption.class)
                     }
                 ),
                 @CommandDef(
                     name = "channel",
                     description = "Remove a user from a channel",
                     options = {
-                        @OptionDef(ModCommand.User.class),
-                        @OptionDef(ModCommand.Channel.class)
+                        @OptionDef(ModCommand.MyUserOption.class),
+                        @OptionDef(ModCommand.MyChannelOption.class)
                     }
                 )
             }
@@ -87,7 +89,7 @@ public class ModCommand {
 
     @Slash( command = "mod", group = "add", sub = "channel")
     public String addUser(
-            @SlashOption(USER_OPT) User user,
+            @SlashOption(USER_OPT)    User user,
             @SlashOption(CHANNEL_OPT) ServerChannel channel) {
         return "Adding " + user.getName() + " to " + channel.getName();
     }
@@ -101,28 +103,28 @@ public class ModCommand {
 
     @Slash( command = "mod", group = "remove", sub = "channel")
     public String removeChannel(
-            @SlashOption(USER_OPT) User user,
+            @SlashOption(USER_OPT)    User user,
             @SlashOption(CHANNEL_OPT) ServerChannel channel) {
         return "Removing " + user.getName() + " from " + channel.getName();
     }
 
-    public static class User extends UserOption {
+    public static class MyUserOption extends UserOption {
         // MUST SUPPORT DEFAULT CONSTRUCTOR FOR THIS TO WORK
-        public User() {
+        public MyUserOption() {
             super(USER_OPT, "The target user", true);
         }
     }
 
-    public static class Role extends RoleOption {
+    public static class MyRoleOption extends RoleOption {
         // MUST SUPPORT DEFAULT CONSTRUCTOR FOR THIS TO WORK
-        public Role() {
+        public MyRoleOption() {
             super(ROLE_OPT, "The target role", true);
         }
     }
 
-    public static class Channel extends ChannelOption {
+    public static class MyChannelOption extends ChannelOption {
         // MUST SUPPORT DEFAULT CONSTRUCTOR FOR THIS TO WORK
-        public Channel() {
+        public MyChannelOption() {
             super(CHANNEL_OPT, "The target channel", true);
         }
     }
