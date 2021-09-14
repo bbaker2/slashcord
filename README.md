@@ -12,6 +12,12 @@ This library separates the above functionalities so you can use this library to 
 
 [![](https://jitpack.io/v/bbaker2/slashcord.svg)](https://jitpack.io/#bbaker2/slashcord)
 
+# Slashcord is in Beta
+```diff
+- This is still in beta and therefor some class may change, move, or be renamed.
+```
+Once we perform our first GA release, all future betas will upgrade friendly.
+
 # Installing and Setup
 ## Maven
 ```xml
