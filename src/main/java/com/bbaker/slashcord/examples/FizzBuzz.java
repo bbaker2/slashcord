@@ -1,8 +1,9 @@
 package com.bbaker.slashcord.examples;
 
+import static org.javacord.api.interaction.SlashCommandOptionType.INTEGER;
+
 import com.bbaker.slashcord.handler.annotation.Slash;
 import com.bbaker.slashcord.handler.annotation.SlashOption;
-import com.bbaker.slashcord.structure.annotation.ChoiceDef;
 import com.bbaker.slashcord.structure.annotation.CommandDef;
 import com.bbaker.slashcord.structure.annotation.OptionDef;
 import com.bbaker.slashcord.structure.entity.Command;
@@ -13,13 +14,12 @@ import com.bbaker.slashcord.structure.entity.RegularCommand;
     name = "fizzbuzz",
     description = "Fizz if divisible by 3, Buzz if divisible by 5",
     options = {
-        @OptionDef(name = "number", description = "Fizz if divisible by 3, Buzz if divisible by 5",
-                choices = {
-                        @ChoiceDef(name = "first", intVal = 10),
-                        @ChoiceDef(name = "second", intVal = 10),
-                        @ChoiceDef(name = "third", intVal = 10),
-                        @ChoiceDef(name = "forth", intVal = 10)
-                })
+        @OptionDef(
+            name = "number",
+            description = "Fizz if divisible by 3, Buzz if divisible by 5",
+            type = INTEGER,
+            required = false
+        )
     }
 )
 public class FizzBuzz {
