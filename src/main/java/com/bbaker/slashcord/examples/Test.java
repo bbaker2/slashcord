@@ -48,6 +48,7 @@ public class Test {
         dispatcher.queue(new FizzBuzz());
         dispatcher.queue(new QuoteCommand());
         dispatcher.queue(new ModCommand());
+        dispatcher.queue(new TodayCommand());
         dispatcher.submit().join();
     }
 
