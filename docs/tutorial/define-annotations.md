@@ -51,8 +51,11 @@ public class QuoteCommand {
 ### @GroupCommandDef
 For when you have 2-layers of sub-commands
 `GroupCommandDef` can only contain an array of `SubCommandDef`, 
+
 .... which can only contain an array of `@CommandDef`,
+
 ........ which can only contain a list of `@OptionDef`
+
 <details>
 <summary>Example of Group Commands</summary>
 <p>
