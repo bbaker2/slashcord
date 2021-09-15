@@ -1,7 +1,6 @@
 package com.bbaker.slashcord.examples;
 
-import static org.javacord.api.interaction.SlashCommandOptionType.INTEGER;
-import static org.javacord.api.interaction.SlashCommandOptionType.STRING;
+import static org.javacord.api.interaction.SlashCommandOptionType.*;
 
 import java.time.LocalDate;
 

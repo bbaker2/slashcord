@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import org.javacord.api.DiscordApi;
-import org.javacord.api.interaction.SlashCommand;
 
 import com.bbaker.slashcord.handler.SlashCommandListener;
 import com.bbaker.slashcord.structure.SlashCommandRegister;
+import com.bbaker.slashcord.structure.results.UpsertResult;
 
 public class SlashCommandDispatcher {
 
@@ -29,7 +29,7 @@ public class SlashCommandDispatcher {
 
 
 
-    public CompletableFuture<List<SlashCommand>> submit() {
+    public CompletableFuture<List<UpsertResult>> submit() {
 
         // The listener is a singleton so lazy-create it if
         // it has not yet been created then attach it to the api
