@@ -118,8 +118,37 @@ public class ModCommand {
 }
 ```
 ## @OptionDef
+These are how you receive inputs from the user. According to discord, you can have a max of [25 Options](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-structure).
+
+There are four values you must populate:
+
+Property | Default | Description
+-------- | --------| -----------
+`name` | required |The "variable name" used to reference the option
+`description` | required | Some helpful text for the user
+`type` | `SlashCommandOptionType.STRING` | What data type is this option. This uses Javacord's [SlashCommandOptionType](https://docs.javacord.org/api/v/3.3.2/org/javacord/api/interaction/SlashCommandOptionType.html) enum. 
+`required` | false | Determines if the user is required to populate to send slash command
+
+Not all types are allowed. Slashcord artificially enforces which [SlashCommandOptionType](https://docs.javacord.org/api/v/3.3.2/org/javacord/api/interaction/SlashCommandOptionType.html) are allowed as an input option.
+
+
+Class | Description | Supports @ChoiceDef?
+----- | ----------- | -----------------
+STRING | String Values | yes
+INTEGER | For both [INTEGER and DOUBLE](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-type) | yes
+BOOLEAN | Boolean Values | no
+USER | For referencing a User | no
+CHANNEL | For referencing a text channel, voice channel, or channel category | no
+ROLE | For referencing a role in a given server | no
+MENTIONABLE | For referencing a user, role, text channel, voice channel, or channel category | no
 
 ## @ChoiceDef
+The `STRING` and `INTEGER` types can also support choices. Good for when you want to force your user to select from a list of values.
+
+According to Discord, you can have a max of [25 Choices](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure).
+
+- If your `@ChoiceDef` is a child of an `@OptionDef` that is an `INTEGER`, you must populate the `intVal` property.
+- If your `@ChoiceDef` is a child of an `@OptionDef` that is an `STRING`, you must populate the `strVal` property.
 
 ## Class Definitions for code reuse
 
