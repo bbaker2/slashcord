@@ -22,6 +22,7 @@ public class PingPongCommand {
 ```
 ### @SubCommandDef
 For when you want to force your user to select a sub-command.
+
 `@SubCommandDef` can only contain an array of `@CommandDef`\
 .... which can only contain an array of [`@OptionDef`](#optiondef)
 ```java
@@ -52,6 +53,7 @@ public class QuoteCommand {
 ```
 ### @GroupCommandDef
 For when you have 2-layers of sub-commands
+
 `GroupCommandDef` can only contain an array of `SubCommandDef`,\
 .... which can only contain an array of `@CommandDef`,\
 ........ which can only contain a list of [`@OptionDef`](#optiondef)
