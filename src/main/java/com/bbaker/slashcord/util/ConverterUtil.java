@@ -170,8 +170,8 @@ public class ConverterUtil {
 
         boolean isNumeric = isBlank(cd.strVal());
         return isNumeric
-                ? new StringChoice(cd.name(), cd.strVal())
-                : new IntChoice(cd.name(), cd.intVal());
+                ? new IntChoice(cd.name(), cd.intVal())
+                : new StringChoice(cd.name(), cd.strVal());
     }
 
     // If a command is nested inside a sub-command, then it is secretly an option
