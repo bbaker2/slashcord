@@ -55,9 +55,9 @@ For when you have 2-layers of sub-commands
 ........ which can only contain a list of `@OptionDef`
 <details>
 <summary>Example of Group Commands</summary>
+<p>
 
 ```java
-
 @GroupCommandDef(
     name = "mod",
     description = "Useful commands for the server mods",
@@ -117,7 +117,9 @@ public class ModCommand {
     */
 }
 ```
+</p>
 </details>
+
 ## @OptionDef
 
 ## @ChoiceDef
