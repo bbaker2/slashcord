@@ -7,12 +7,12 @@ Commands in discords have 3 main parts:
 ## Define the base command
 All commands need a name and description
 ```java
-Command fizzBuzzCmd = new CommandTierI("ping", "Will Ping");
+Command fizzBuzzCmd = new RegularCommand("ping", "Will Ping");
 ```
 The Command object must be implemented by one of three classes:
-CommandTierI | The simplest command that only supports [user-inputted options](#basic-options)
-CommandTierII | Supports commands with sub-commands. See [Sub Command](#sub-commands) for usage
-CommandTierIII | Supports commands with groups. See [Command Groups](#command-groups) for usage
+RegularCommand | The simplest command that only supports [user-inputted options](#basic-options)
+SubCommand | Supports commands with sub-commands. See [Sub Command](#sub-commands) for usage
+GroupCommand | Supports commands with groups. See [Command Groups](#command-groups) for usage
 
 
 ## Define the options
@@ -24,7 +24,7 @@ All basic options extend the `InputOption` class.
 Each option needs a name, description, and wither or not the option is required.
 ```java
 InputOption intOption = new IntOption("number", "Any whole number", true);
-Command fizzBuzzCmd = new CommandTierI("fizzbuzz", "Fizz if divisible by 3, Buzz if divisible by 5")
+Command fizzBuzzCmd = new RegularCommand("fizzbuzz", "Fizz if divisible by 3, Buzz if divisible by 5")
     .addOption(intOption));
 ```
 We are limited to what javacord can support, so the following basic options exist:
@@ -39,14 +39,14 @@ ChanelOption | For referencing a text channel, voice channel, or channel categor
 RoleOption | For referencing a role in a given server | no
 MentionalbleOption | For referencing a user, role, text channel, voice channel, or channel category | no
 
-**Note:** `InputOption` can only be a child of the `CommandTierI` or `SubOption`
+**Note:** `InputOption` can only be a child of the `RegularCommand` or `SubOption`
 ### Choices
 wip
 ### Sub Commands
-The `SubOption` are a special type of option that can ONLY be a child of a `CommandTierII` or `SubGroup`. 
+The `SubOption` are a special type of option that can ONLY be a child of a `SubCommand` or `SubGroup`. 
 Its child options can only be `InputOption`
 ```java
-CommandTierII quote = new CommandTierII("quote", "For quoting funny things in the server");
+SubCommand quote = new SubCommand("quote", "For quoting funny things in the server");
 quote.addOption(
     new SubOption("add", "Add a quote").addOptions(
         new StringOption("quote", "The quote itself",    true),
@@ -56,9 +56,9 @@ quote.addOption(
 );
 ```
 ### Command Groups
-`GroupOption` are a special type of option that can ONLY be a child of a `CommandTierIII`. 
+`GroupOption` are a special type of option that can ONLY be a child of a `GroupCommand`. 
 ```java
-CommandTierIII mod = new CommandTierIII("mod",      "Useful commands for the server mods");
+GroupCommand mod = new GroupCommand("mod",      "Useful commands for the server mods");
 InputOption user    = new UserOption("user",        "The target user",      true);
 InputOption channel = new ChannelOption("channel",  "The target channel",   true);
 InputOption role    = new RoleOption("role",        "The target role",      true);

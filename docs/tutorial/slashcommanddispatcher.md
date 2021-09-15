@@ -15,18 +15,18 @@ public void init(DiscordApi api){
 }
 
 private Command createPingPong() {
-    return new CommandTierI("ping", "Will Ping");
+    return new RegularCommand("ping", "Will Ping");
 }
 
 private Command createFizzBuzzCommand() {
-     return new CommandTierI("fizzbuzz", "Fizz if divisible by 3, Buzz if divisible by 5")
+     return new RegularCommand("fizzbuzz", "Fizz if divisible by 3, Buzz if divisible by 5")
          .addOption(
              new IntOption("number", "Any whole number", true)
      );
 }
 
 private Command createQuoteCommand() {
-    CommandTierII quote = new CommandTierII("quote", "For quoting funny things in the server");
+    SubCommand quote = new SubCommand("quote", "For quoting funny things in the server");
     quote.addOption(
         new SubOption("add", "Add a quote").addOptions(
             new StringOption("quote", "The quote itself", true),
@@ -40,7 +40,7 @@ private Command createQuoteCommand() {
 
 
 private Command createModsCommand() {
-    CommandTierIII mod = new CommandTierIII("mod",      "Useful commands for the server mods");
+    GroupCommand mod    = new GroupCommand("mod",      "Useful commands for the server mods");
     InputOption user    = new UserOption("user",        "The target user",      true);
     InputOption channel = new ChannelOption("channel",  "The target channel",   true);
     InputOption role    = new RoleOption("role",        "The target role",      true);

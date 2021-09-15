@@ -55,6 +55,7 @@ As long as the parameter **name and type** match an option found in the slash co
 
 Because of this primates such as `int`, `long`, `double`, and `boolean` are not allowed. Please use `Integer` or `Boolean`.
 You must also denote which method parameters are tethered to a command option by using the `@OptionName` annotation. 
+
 ```java
 @Slash(command = "fizzbuzz")
 public String fizzBuzz(@SlashOption("number") Integer number) {
@@ -68,6 +69,19 @@ public String fizzBuzz(@SlashOption("number") Integer number) {
     return sb.length() == 0 ? "No matches" : sb.toString();
 }
 ```
+_Why do I need to use `@OptionName`?_
+> Java does not guarantee that the parameter name is available during runtime.
+> If you read the official docs regarding [Obtaining Names of Method Parameters](https://docs.oracle.com/javase/tutorial/reflect/member/methodparameterreflection.html) you will see that the parameter name is only preserved when "... compile the source file with the `-parameters` option to the `javac` compiler."
+> As the developer, you are in control of how you compile your code, so if you *do* use the `-parameters` option, you do *not*need `@SlashOption` annotation.
+> But it is recommended that you do so anyways for consistency and stability.
+```java
+@Slash(command = "fizzbuzz")
+public String fizzBuzz(Integer number) {
+    return "This will match with the 'number' named option if you use the -parameters option while compiling\n"
+    + "otherwise, the name of this parameter will be 'arg0'";
+}
+```
+
 ### Supporting Sub Commands
 Using our [quote](define-classes.md#sub-commands) example from before, lets create a method that only is called for a specific sub command.
 ```java
