@@ -62,6 +62,10 @@ public class Option {
             return false;
         }
 
+        if(this.isRequired() != that.isRequired()) {
+            return false;
+        }
+
         if(!equalLists(this.getChoices(), that.getChoices())) {
             return false;
         }
