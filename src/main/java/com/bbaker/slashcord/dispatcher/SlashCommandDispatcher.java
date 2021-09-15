@@ -9,7 +9,6 @@ import org.javacord.api.interaction.SlashCommand;
 
 import com.bbaker.slashcord.handler.SlashCommandListener;
 import com.bbaker.slashcord.structure.SlashCommandRegister;
-import com.bbaker.slashcord.structure.entity.Command;
 
 public class SlashCommandDispatcher {
 
@@ -41,10 +40,8 @@ public class SlashCommandDispatcher {
 
         SlashCommandRegister registry = new SlashCommandRegister();
         for(Object queued : queuedCommands) {
-            // Find command defs and add it to the registry queue
-            if(queued instanceof Command) {
-                registry.queue((Command) queued);
-            }
+            // queue up the command to be sent to discord
+            registry.queue(queued);
 
             // the listener is a beast and can scan any object without issue
             listener.addListener(queued);;
