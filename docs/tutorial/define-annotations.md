@@ -6,12 +6,12 @@ There are three types of commands you can declare:
 
 Annotation | Description
 ---------- | -----------
-@CommandDef | Just has [options](#options)
+@CommandDef | Just has [options](#optiondef)
 @SubCommandDef | It nests ``@CommandDef`` as a sub-option
 @GroupCommandDef | Nests `SubCommandDef` as a sub-option, which in turn nests `@CommandDef` as another sub-option
 
 ### @CommandDef
-The most common type of command. It can take in user inputs as options ([See @optionDef](#@optiondef))
+The most common type of command. It can take in user inputs as options ([See @OptionDef](#optiondef))
 ```java
 @CommandDef(name = "ping", description = "Will pong if pinged")
 public class PingPongCommand {
@@ -50,7 +50,14 @@ public class QuoteCommand {
 ```
 ### @GroupCommandDef
 For when you have 2-layers of sub-commands
+`GroupCommandDef` can only contain an array of `SubCommandDef`, 
+.... which can only contain an array of `@CommandDef`,
+........ which can only contain a list of `@OptionDef`
+<details>
+<summary>Example of Group Commands</summary>
+
 ```java
+
 @GroupCommandDef(
     name = "mod",
     description = "Useful commands for the server mods",
@@ -110,7 +117,7 @@ public class ModCommand {
     */
 }
 ```
-
+</details>
 ## @OptionDef
 
 ## @ChoiceDef
