@@ -149,6 +149,63 @@ According to Discord, you can have a max of [25 Choices](https://discord.com/dev
 
 - If your `@ChoiceDef` is a child of an `@OptionDef` that is an `INTEGER`, you must populate the `intVal` property.
 - If your `@ChoiceDef` is a child of an `@OptionDef` that is an `STRING`, you must populate the `strVal` property.
+```java
+@SubCommandDef(
+    name = "choice-example",
+    description = "The user will be forced to select from a list of values",
+    subs = {
+        @CommandDef(
+            name = "today",
+            description = "Determin if today matches the provided day of the week",
+            options = {
+                @OptionDef(
+                    name = "day",
+                    description = "the day of the week",
+                    type = STRING,
+                    required = true,
+                    choices = {
+                            @ChoiceDef(name = "Monday",     strVal = "MONDAY"),
+                            @ChoiceDef(name = "Tuesday",    strVal = "TUESDAY"),
+                            @ChoiceDef(name = "Wednesday",  strVal = "WEDNESDAY"),
+                            @ChoiceDef(name = "Thursday",   strVal = "THURSDAY"),
+                            @ChoiceDef(name = "Friday",     strVal = "FRIDAY"),
+                            @ChoiceDef(name = "Saturday",   strVal = "SATURDAY"),
+                            @ChoiceDef(name = "Sunday",     strVal = "SUNDAY")
+                    }
+                )
+            }
+        ),
+        @CommandDef(
+            name = "permission",
+            description = "will set the permissions using chmod numbers",
+            options = {
+                @OptionDef(
+                    name = "chmod",
+                    description = "The chmod numeric permission",
+                    type = INTEGER,
+                    required = true,
+                    choices = {
+                        @ChoiceDef(name = "---", intVal = 0),
+                        @ChoiceDef(name = "--x", intVal = 1),
+                        @ChoiceDef(name = "-w-", intVal = 2),
+                        @ChoiceDef(name = "-wx", intVal = 3),
+                        @ChoiceDef(name = "r--", intVal = 4),
+                        @ChoiceDef(name = "r-x", intVal = 5),
+                        @ChoiceDef(name = "rw-", intVal = 6),
+                        @ChoiceDef(name = "rwx", intVal = 7)
+                    }
+                )
+            }
+        )
+    }
+    )
+public class TodayCommand {
+    /*
+    @Slash( command = "choice-example", sub = "today")         // will probably be somewhere in here
+    @Slash( command = "choice-example", sub = "permission")    // will probably be somewhere in here
+    */
+
+```
 
 ## Class Definitions for code reuse
 
