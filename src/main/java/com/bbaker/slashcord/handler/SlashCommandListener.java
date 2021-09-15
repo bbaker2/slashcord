@@ -14,7 +14,6 @@ import java.util.function.Function;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.channel.ServerChannel;
 import org.javacord.api.entity.channel.TextChannel;
-import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.permission.Role;
 import org.javacord.api.entity.user.User;
 import org.javacord.api.event.interaction.SlashCommandCreateEvent;
@@ -41,8 +40,8 @@ import com.bbaker.slashcord.handler.args.RoleOptionArgument;
 import com.bbaker.slashcord.handler.args.StringOptionArgument;
 import com.bbaker.slashcord.handler.args.UserMetaArgument;
 import com.bbaker.slashcord.handler.args.UserOptionArgument;
-import com.bbaker.slashcord.handler.response.MessageBuilderResponse;
 import com.bbaker.slashcord.handler.response.StringResponse;
+import com.bbaker.slashcord.handler.response.ToStringResponse;
 import com.bbaker.slashcord.handler.response.VoidResponse;
 
 public class SlashCommandListener implements SlashCommandCreateListener {
@@ -130,12 +129,21 @@ public class SlashCommandListener implements SlashCommandCreateListener {
             return new VoidResponse();
         } else if(returnType.isAssignableFrom(String.class)){
             return new StringResponse();
-        } else if(returnType.isAssignableFrom(MessageBuilder.class)){
-            return new MessageBuilderResponse();
+        } else if(hasCustomToString(returnType)){
+            return new ToStringResponse();
         } else {
             return new VoidResponse();
         }
+    }
 
+    private static boolean hasCustomToString(Class<?> returnType) {
+        try {
+            String fullyQualifiedName = returnType.getMethod("toString").getDeclaringClass().toString();
+            return fullyQualifiedName.equals(Object.class.toString());
+        } catch (NoSuchMethodException | SecurityException e) {
+            e.printStackTrace();
+            return false; // should never be called. All methods have toString
+        }
     }
 
     private Function<SlashCommandInteraction, Object>[] generateParamHandlers(Parameter[] params){
