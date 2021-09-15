@@ -3,6 +3,7 @@ package com.bbaker.slashcord.examples;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.event.interaction.SlashCommandCreateEvent;
+import org.javacord.api.util.logging.ExceptionLogger;
 
 import com.bbaker.slashcord.dispatcher.SlashCommandDispatcher;
 import com.bbaker.slashcord.handler.SlashCommandListener;
@@ -19,11 +20,11 @@ public class Test {
         DiscordApi api = new DiscordApiBuilder().setToken(args[0]).login().join();
 
         // just creating/updating commands
-        registerWithClasses(api);
-        registerWithAnnotations(api);
+//        registerWithClasses(api);
+//        registerWithAnnotations(api);
 
         // just responding to commands
-        registerWithAnnotations(api);
+//        registerWithAnnotations(api);
 
         // for when you and to do both with one method call
         everythingWithTheDispatcher(api);
@@ -63,7 +64,7 @@ public class Test {
         register.queue(FizzBuzz.createFizzBuzzCommand());
         register.queue(QuoteCommand.createQuoteCommand());
         register.queue(ModCommand.createModsCommand());
-        register.upsert(api).join();
+        register.upsert(api).exceptionally(ExceptionLogger.get());
     }
 
     /**

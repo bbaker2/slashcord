@@ -70,9 +70,14 @@ public class SlashCommandRegister {
         CompletableFuture<List<SlashCommand>> allFutures = CompletableFuture.completedFuture(Arrays.asList());
         // Perform inserts
         System.out.println("Inserting " + prepared.toInsert.size() + " commands");
-        for(SlashCommandBuilder insert : prepared.toInsert) {
+        for(Meta<SlashCommandBuilder> insert : prepared.toInsert) {
             allFutures = allFutures
-                .thenCompose(allSuccess -> insert.createGlobal(api)) // insert one command
+                .thenCompose(allSuccess -> insert.builder.createGlobal(api)) // insert one command
+                .exceptionally(e -> {
+                    System.out.println("Error while update: " + insert.def.getName());
+                    e.printStackTrace();
+                    return null;
+                })
                 .thenApply(successful::add)							 // add the command (once created) to the success list
                 .thenApply(ignore -> successful);					 // A little trick to convert CompletableFuture<SlashCommand> into CompletableFuture<List<SlashCommand>>
 
@@ -80,9 +85,14 @@ public class SlashCommandRegister {
 
         // Perform updates
         System.out.println("Updating " + prepared.toUpdate.size() + " commands");
-        for(SlashCommandUpdater update : prepared.toUpdate) {
+        for(Meta<SlashCommandUpdater> update : prepared.toUpdate) {
             allFutures = allFutures
-                .thenCompose(allSuccess -> update.updateGlobal(api)) // update one command
+                .thenCompose(allSuccess -> update.builder.updateGlobal(api)) // update one command
+                .exceptionally(e -> {
+                    System.out.println("Error while update: " + update.def.getName());
+                    e.printStackTrace();
+                    return null;
+                })
                 .thenApply(successful::add)							 // add the command (once updated) to the success list
                 .thenApply(ignore -> successful);					 // A little trick to convert CompletableFuture<SlashCommand> into CompletableFuture<List<SlashCommand>>
         }
@@ -114,7 +124,8 @@ public class SlashCommandRegister {
                         // will be small and will not be called often.
                         // So little inefficiency will not kill overall performance
                         long commandId = matchByName(originalList, existing.getName());
-                        upsert.toUpdate.add(from(desired, commandId));
+                        Meta pair = new Meta(from(desired, commandId), desired);
+                        upsert.toUpdate.add(pair);
                         continue outer; // force continue the outer loop
                     }
                 }
@@ -122,7 +133,8 @@ public class SlashCommandRegister {
             // if we complete the inner loop without a continue or break
             // we can assume the command does not yet exist in discord.
             // So queue this command for insert
-            upsert.toInsert.add(ConverterUtil.from(desired));
+            Meta pair = new Meta(ConverterUtil.from(desired), desired);
+            upsert.toInsert.add(pair);
         }
         return upsert;
     }
@@ -137,8 +149,17 @@ public class SlashCommandRegister {
     }
 
     private class Upsert {
-        List<SlashCommandBuilder> toInsert = new ArrayList<>();
-        List<SlashCommandUpdater> toUpdate = new ArrayList<>();
+        final List<Meta<SlashCommandBuilder>> toInsert = new ArrayList<>();
+        final List<Meta<SlashCommandUpdater>> toUpdate = new ArrayList<>();
+    }
+
+    private class Meta<B> {
+        public Meta(B trg, Command src) {
+            this.def = src;
+            this.builder = trg;
+        }
+        final B builder;
+        final Command def;
     }
 
 }
