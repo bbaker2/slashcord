@@ -1,5 +1,7 @@
 package com.bbaker.slashcord.structure.entity;
 
+import static com.bbaker.slashcord.util.CommonsUtil.isBlank;
+
 import java.util.Objects;
 
 public class Choice {
@@ -21,7 +23,7 @@ public class Choice {
     }
 
     public boolean equals(Object o) {
-        if(o instanceof Choice) {
+        if(!(o instanceof Choice)) {
             return super.equals(o);
         }
 
@@ -31,10 +33,15 @@ public class Choice {
             return false;
         }
 
-        if(this.getStrVal() == null && that.getStrVal() == null) {
+        // If both are blank, then check the numbers
+        if(isBlank(this.getStrVal()) && isBlank(that.getStrVal())) {
             return this.getIntVal() == that.getIntVal();
-        } else if(this.getStrVal() == null ^ that.getStrVal() == null) {
+
+        // If only one is blank, then this is a string value and does not match
+        } else if(isBlank(this.getStrVal()) ^ isBlank(that.getStrVal())) {
             return false;
+
+        // Otherwise, assume both string values exist and comapre the two
         } else {
             return this.getStrVal().equals(that.getStrVal());
         }
