@@ -1,5 +1,7 @@
 package com.bbaker.slashcord.examples;
 
+import java.util.stream.Collectors;
+
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.event.interaction.SlashCommandCreateEvent;
@@ -50,7 +52,11 @@ public class Test {
         dispatcher.queue(new QuoteCommand());
         dispatcher.queue(new ModCommand());
         dispatcher.queue(new TodayCommand());
-        dispatcher.submit().join();
+        dispatcher.submit().join().stream().forEach(ur -> {
+            String msg = ur.getMessage().stream().collect(Collectors.joining("\n  "));
+            msg = "\n  " + msg;
+            System.out.printf("[%-6s]:%5b %s%n", ur.getOperartion(), ur.successful(), msg);
+        });
     }
 
     /**

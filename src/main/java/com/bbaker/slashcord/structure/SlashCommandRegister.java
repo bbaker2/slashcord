@@ -1,7 +1,6 @@
 package com.bbaker.slashcord.structure;
 
-import static com.bbaker.slashcord.structure.Operation.*;
-import static com.bbaker.slashcord.util.ConverterUtil.*;
+import static com.bbaker.slashcord.util.ConverterUtil.from;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -66,19 +65,16 @@ public class SlashCommandRegister {
     public CompletableFuture<List<UpsertResult>> upsert(DiscordApi api){
         Upsert prepared = previewInsert(api);
 
-        final List<SlashCommand> successful = new ArrayList<>();
+        final List<UpsertResult> successful = new ArrayList<>();
 
-        CompletableFuture<List<SlashCommand>> allFutures = CompletableFuture.completedFuture(Arrays.asList());
+        CompletableFuture<List<UpsertResult>> allFutures = CompletableFuture.completedFuture(Arrays.asList());
         // Perform inserts
         System.out.println("Inserting " + prepared.toInsert.size() + " commands");
         for(Meta<SlashCommandBuilder> insert : prepared.toInsert) {
             allFutures = allFutures
                 .thenCompose(allSuccess -> insert.builder.createGlobal(api)) // insert one command
-                .exceptionally(e -> {
-                    System.out.println("Error while update: " + insert.def.getName());
-                    e.printStackTrace();
-                    return null;
-                })
+                .thenApply(UpsertResults::inserted)
+                .exceptionally(UpsertResults::inserted)
                 .thenApply(successful::add)							 // add the command (once created) to the success list
                 .thenApply(ignore -> successful);					 // A little trick to convert CompletableFuture<SlashCommand> into CompletableFuture<List<SlashCommand>>
 
@@ -89,16 +85,8 @@ public class SlashCommandRegister {
         for(Meta<SlashCommandUpdater> update : prepared.toUpdate) {
             allFutures = allFutures
                 .thenCompose(allSuccess -> update.builder.updateGlobal(api)) // update one command
-                .exceptionally(e -> {
-                    System.out.println("Error while update: " + update.def.getName());
-                    e.printStackTrace();
-                    new ErrorHandler(UPDATE, null)
-                        .apply(e)
-                        .getMessage()
-                        .stream()
-                        .forEach(System.out::println);
-                    return null;
-                })
+                .thenApply(UpsertResults::updated)
+                .exceptionally(UpsertResults::updated)
                 .thenApply(successful::add)							 // add the command (once updated) to the success list
                 .thenApply(ignore -> successful);					 // A little trick to convert CompletableFuture<SlashCommand> into CompletableFuture<List<SlashCommand>>
         }
