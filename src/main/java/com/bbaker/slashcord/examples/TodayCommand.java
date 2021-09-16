@@ -1,7 +1,6 @@
 package com.bbaker.slashcord.examples;
 
-import static org.javacord.api.interaction.SlashCommandOptionType.INTEGER;
-import static org.javacord.api.interaction.SlashCommandOptionType.STRING;
+import static org.javacord.api.interaction.SlashCommandOptionType.*;
 
 import java.time.LocalDate;
 
@@ -44,7 +43,7 @@ import com.bbaker.slashcord.structure.annotation.SubCommandDef;
                 @OptionDef(
                     name = "chmod",
                     description = "The chmod numeric permission",
-                    type = INTEGER,
+                    type = STRING,
                     required = true,
                     choices = {
                         @ChoiceDef(name = "---", intVal = 0),

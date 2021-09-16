@@ -1,6 +1,7 @@
 package com.bbaker.slashcord.structure;
 
-import static com.bbaker.slashcord.util.ConverterUtil.from;
+import static com.bbaker.slashcord.structure.Operation.*;
+import static com.bbaker.slashcord.util.ConverterUtil.*;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class SlashCommandRegister {
     }
 
 
-    public CompletableFuture<List<SlashCommand>> upsert(DiscordApi api){
+    public CompletableFuture<List<UpsertResult>> upsert(DiscordApi api){
         Upsert prepared = previewInsert(api);
 
         final List<SlashCommand> successful = new ArrayList<>();
@@ -91,6 +92,11 @@ public class SlashCommandRegister {
                 .exceptionally(e -> {
                     System.out.println("Error while update: " + update.def.getName());
                     e.printStackTrace();
+                    new ErrorHandler(UPDATE, null)
+                        .apply(e)
+                        .getMessage()
+                        .stream()
+                        .forEach(System.out::println);
                     return null;
                 })
                 .thenApply(successful::add)							 // add the command (once updated) to the success list
