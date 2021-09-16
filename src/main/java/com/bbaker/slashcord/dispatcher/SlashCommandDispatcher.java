@@ -8,7 +8,7 @@ import org.javacord.api.DiscordApi;
 
 import com.bbaker.slashcord.handler.SlashCommandListener;
 import com.bbaker.slashcord.structure.SlashCommandRegister;
-import com.bbaker.slashcord.structure.UpsertResult;
+import com.bbaker.slashcord.structure.results.UpsertResult;
 
 public class SlashCommandDispatcher {
 

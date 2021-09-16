@@ -1,7 +1,5 @@
 package com.bbaker.slashcord.examples;
 
-import java.util.stream.Collectors;
-
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.event.interaction.SlashCommandCreateEvent;
@@ -31,6 +29,8 @@ public class Test {
         // for when you and to do both with one method call
         everythingWithTheDispatcher(api);
 
+        api.disconnect();
+
         // If you were to run this code, we would "register" the same command
         // over and over. Slashcord is actually smart enough to skip redundant
         // updates and will not double-respond to method handlers.
@@ -52,11 +52,7 @@ public class Test {
         dispatcher.queue(new QuoteCommand());
         dispatcher.queue(new ModCommand());
         dispatcher.queue(new TodayCommand());
-        dispatcher.submit().join().stream().forEach(ur -> {
-            String msg = ur.getMessage().stream().collect(Collectors.joining("\n  "));
-            msg = "\n  " + msg;
-            System.out.printf("[%-6s]:%5b %s%n", ur.getOperartion(), ur.successful(), msg);
-        });
+        dispatcher.submit().join().stream().forEach(System.out::println);
     }
 
     /**
