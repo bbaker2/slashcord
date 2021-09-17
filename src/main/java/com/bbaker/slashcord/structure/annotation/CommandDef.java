@@ -3,6 +3,7 @@ package com.bbaker.slashcord.structure.annotation;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -10,6 +11,7 @@ import com.bbaker.slashcord.structure.entity.RegularCommand;
 
 @Retention(RUNTIME)
 @Target(TYPE)
+@Repeatable(CommandDefs.class)
 public @interface CommandDef {
 
     String name() default "";
