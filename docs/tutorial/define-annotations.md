@@ -223,6 +223,7 @@ Annotation | Class to Extend
 
 In the below example, ALL the `@CommandDef` define the exact same command.
 They just demonstrate the ability to mix and match classes with annotations. 
+
 ```java
 @CommandDef(ClassValueCommand.MyCommand.class)
 @CommandDef(
