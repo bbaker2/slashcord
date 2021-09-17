@@ -47,22 +47,19 @@ public class SlashCommandRegister {
     }
 
     private <T extends Annotation> void scanAndQueue(Class<T> anotation, Object instance, ThrowableFunction<T, Command, BadAnnotation> converter){
-        T cmdDef = instance.getClass().getAnnotation(anotation); // Grab the annotation, if any exist
+        T[] repeatingDefs = instance.getClass().getAnnotationsByType(anotation);
 
-        // if not exist, short circuit
-        if(cmdDef == null) {
-            return;
-        }
-
-        // if one does exist, attempt to convert it into the Command class
-        try {
-            Command cmd = converter.apply(cmdDef);
-            queued.add(cmd);
-        } catch (BadAnnotation e) {
-            // If there are failures... suppress the exception
-            // and short circuit
-            e.printStackTrace();
-            return;
+        for(T cmdDef : repeatingDefs) {
+            // if one does exist, attempt to convert it into the Command class
+            try {
+                Command cmd = converter.apply(cmdDef);
+                queued.add(cmd);
+            } catch (BadAnnotation e) {
+                // If there are failures... suppress the exception
+                // and short circuit
+                e.printStackTrace();
+                continue;
+            }
         }
     }
 

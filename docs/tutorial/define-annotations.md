@@ -219,8 +219,8 @@ Annotation | Class to Extend
 @CommandDef | Command
 @SubCommandDef | SubCommand
 @GroupCommandDef | GroupCommand
-@OptionDef | InputOption
-@ChoiceDef | Choice
+@OptionDef | StringOption, IntOption, BooleanOption, UserOption, ChanelOption, RoleOption, MentionalbleOption, or InputOption
+@ChoiceDef | StringChoice, IntChoice, Choice
 
 In the below example, ALL the `@CommandDef` define the exact same command.
 They just demonstrate the ability to mix and match classes with annotations. 
@@ -274,34 +274,34 @@ They just demonstrate the ability to mix and match classes with annotations.
 )
 public class ClassValueCommand {
 
-    /** statically defined classes with default constructors **/
-    static class MyCommand extends RegularCommand {
-        public MyCommand(String name, String description) {
+    /** public statically defined classes with default constructors **/
+    public static class MyCommand extends RegularCommand {
+        public MyCommand() {
             super("my-command", "the command description");
             addOption(new MyOption());
         }
     }
 
-    static class MyOption extends IntOption {
+    public static class MyOption extends IntOption {
         public MyOption() {
             super("my-option", "the option description", true);
             appendChoice(new MyChoiceOne(), new MyChoiceTwo());
         }
     }
 
-    static class MyChoiceOne extends IntChoice {
+    public static class MyChoiceOne extends IntChoice {
         public MyChoiceOne() {
             super("one", 1);
         }
     }
 
-    static class MyChoiceTwo extends IntChoice {
+    public static class MyChoiceTwo extends IntChoice {
         public MyChoiceTwo() {
             super("two", 2);
         }
     }
 
-    /** The slash command itself **/
+    /** the command handler itself **/
     @Slash(command = "my-command")
     public String doCommand(@SlashOption("my-option") Integer val) {
         // Say hello as many times as the integer value says

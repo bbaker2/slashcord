@@ -52,6 +52,7 @@ public class Test {
         dispatcher.queue(new QuoteCommand());
         dispatcher.queue(new ModCommand());
         dispatcher.queue(new TodayCommand());
+        dispatcher.queue(new ClassValueCommand());
         dispatcher.submit().join().stream().forEach(System.out::println);
     }
 

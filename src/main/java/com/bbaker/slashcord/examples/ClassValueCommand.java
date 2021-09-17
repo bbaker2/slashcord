@@ -1,3 +1,4 @@
+package com.bbaker.slashcord.examples;
 import static org.javacord.api.interaction.SlashCommandOptionType.INTEGER;
 
 import java.util.stream.Collectors;
@@ -8,7 +9,6 @@ import com.bbaker.slashcord.handler.annotation.SlashOption;
 import com.bbaker.slashcord.structure.annotation.ChoiceDef;
 import com.bbaker.slashcord.structure.annotation.CommandDef;
 import com.bbaker.slashcord.structure.annotation.OptionDef;
-import com.bbaker.slashcord.structure.entity.InputOption;
 import com.bbaker.slashcord.structure.entity.IntChoice;
 import com.bbaker.slashcord.structure.entity.IntOption;
 import com.bbaker.slashcord.structure.entity.RegularCommand;
@@ -61,28 +61,28 @@ import com.bbaker.slashcord.structure.entity.RegularCommand;
 )
 public class ClassValueCommand {
 
-    /** statically defined classes with default constructors **/
-    static class MyCommand extends RegularCommand {
-        public MyCommand(String name, String description) {
+    /** public statically defined classes with default constructors **/
+    public static class MyCommand extends RegularCommand {
+        public MyCommand() {
             super("my-command", "the command description");
             addOption(new MyOption());
         }
     }
 
-    static class MyOption extends IntOption {
+    public static class MyOption extends IntOption {
         public MyOption() {
             super("my-option", "the option description", true);
             appendChoice(new MyChoiceOne(), new MyChoiceTwo());
         }
     }
 
-    static class MyChoiceOne extends IntChoice {
+    public static class MyChoiceOne extends IntChoice {
         public MyChoiceOne() {
             super("one", 1);
         }
     }
 
-    static class MyChoiceTwo extends IntChoice {
+    public static class MyChoiceTwo extends IntChoice {
         public MyChoiceTwo() {
             super("two", 2);
         }
