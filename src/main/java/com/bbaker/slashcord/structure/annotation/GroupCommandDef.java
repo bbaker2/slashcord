@@ -1,16 +1,17 @@
 package com.bbaker.slashcord.structure.annotation;
 
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import com.bbaker.slashcord.structure.entity.GroupCommand;
 
 @Retention(RUNTIME)
-@Target({ANNOTATION_TYPE, TYPE})
+@Target(TYPE)
+@Repeatable(GroupCommandDefs.class)
 public @interface GroupCommandDef {
 
     String name() default "";
