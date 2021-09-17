@@ -208,5 +208,16 @@ public class TodayCommand {
 ```
 
 ## Class Definitions for code reuse
+Each annotation can be populated by referencing a class. The class you create must:
+- extend the correct class
+- be a static class
+- have a the default constructor
 
-Not actually done yet. Will be in release 2 or 3
+Annotation | Class to Extend
+---------- | ---------------
+@CommandDef | Command
+@SubCommandDef | SubCommand
+@GroupCommandDef | GroupCommand
+@OptionDef | InputOption
+@ChoiceDef | Choice
+
