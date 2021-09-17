@@ -40,6 +40,7 @@ import com.bbaker.slashcord.handler.args.RoleOptionArgument;
 import com.bbaker.slashcord.handler.args.StringOptionArgument;
 import com.bbaker.slashcord.handler.args.UserMetaArgument;
 import com.bbaker.slashcord.handler.args.UserOptionArgument;
+import com.bbaker.slashcord.handler.response.AutoSuccess;
 import com.bbaker.slashcord.handler.response.StringResponse;
 import com.bbaker.slashcord.handler.response.ToStringResponse;
 import com.bbaker.slashcord.handler.response.VoidResponse;
@@ -132,14 +133,14 @@ public class SlashCommandListener implements SlashCommandCreateListener {
         } else if(hasCustomToString(returnType)){
             return new ToStringResponse();
         } else {
-            return new VoidResponse();
+            return new AutoSuccess();
         }
     }
 
     private static boolean hasCustomToString(Class<?> returnType) {
         try {
             String fullyQualifiedName = returnType.getMethod("toString").getDeclaringClass().toString();
-            return fullyQualifiedName.equals(Object.class.toString());
+            return !fullyQualifiedName.equals(Object.class.toString());
         } catch (NoSuchMethodException | SecurityException e) {
             e.printStackTrace();
             return false; // should never be called. All methods have toString
