@@ -30,6 +30,7 @@ import com.bbaker.slashcord.util.ThrowableFunction;
 public class SlashCommandRegister {
 
     List<Command> queued = new ArrayList<>();
+    List<UpsertResult> failedQueued = new ArrayList<>();
 
     public SlashCommandRegister queue(Object command) {
         // Anything that is already a command gets
@@ -57,7 +58,7 @@ public class SlashCommandRegister {
             } catch (BadAnnotation e) {
                 // If there are failures... suppress the exception
                 // and short circuit
-                e.printStackTrace();
+                failedQueued.add(new FailedResult(e, null, Operation.SKIP));
                 continue;
             }
         }
@@ -98,6 +99,13 @@ public class SlashCommandRegister {
         for(Meta<SlashCommand> skip : prepared.toSkip) {
             successful.add(new SuccessfulResult(skip.def, skip.builder, Operation.SKIP));
         }
+
+        successful.addAll(failedQueued);
+
+        // After all the operations are done,
+        // flush the queues
+        failedQueued.clear();
+        queued.clear();
 
         return allFutures;
     }

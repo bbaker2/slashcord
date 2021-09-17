@@ -65,8 +65,10 @@ public class FailedResult implements UpsertResult {
         if(isNotBlank(msg)) {
             msg = "\n  " + msg;
         }
+
+        String name = def == null ? "null" : def.getName();
         return String.format("%-16s %8s was unsuccessful%s",
-                "["+def.getName()+"]",
+                "["+name+"]",
                 operation,
                 msg);
     }
