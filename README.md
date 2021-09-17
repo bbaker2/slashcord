@@ -12,12 +12,41 @@ This library separates the above functionalities so you can use this library to 
 
 [![](https://jitpack.io/v/bbaker2/slashcord.svg)](https://jitpack.io/#bbaker2/slashcord)
 
-# Slashcord is in Beta
-```diff
-- This is still in beta and therefor some class may change, move, or be renamed.
-```
-Once we perform our first GA release, all future betas will upgrade friendly.
+## Example Usage
+```java
+@CommandDef(name = "ping",     description = "Will pong if pinged")
+@CommandDef(name = "fizzbuzz", description = "Fizz if divisible by 3, Buzz if divisible by 5",
+    options = {
+        @OptionDef(name = "number", description = "Fizz if divisible by 3, Buzz if divisible by 5",
+            type = INTEGER, required = true)
+    }
+)
+public class ExampleCommand {
 
+    @Slash(command = "ping")
+    public String ping() {
+        return "pong";
+    }
+
+    @Slash(command = "fizzbuzz")
+    public String fizzBuzz(@SlashOption("number") Integer number) {
+        StringBuilder sb = new StringBuilder();
+        if(number % 3 == 0) sb.append("fizz");
+        if(number % 5 == 0) {
+            if(sb.length() > 0) sb.append(" ");
+            sb.append("buzz");
+        }
+        return sb.length() == 0 ? "No matches" : sb.toString();
+    }
+}
+
+/** During Bot Initialization */
+DiscordApi api = getApiSomehow();
+SlashCommandDispatcher dispatcher = new SlashCommandDispatcher(api);
+dispatcher.queue(new ExampleCommand());
+dispatcher.submit(); 
+```
+See the [wiki page](https://bbaker2.github.io/slashcord/) for detailed instructions on how to use this library
 # Installing and Setup
 ## Maven
 ```xml
@@ -48,5 +77,3 @@ dependencies {
 }
 
 ```
-
-See the [wiki page](https://bbaker2.github.io/slashcord/) for detailed instructions on how to use this library

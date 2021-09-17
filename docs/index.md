@@ -1,6 +1,41 @@
 # Summary
 This is a util library to make it easier to create, manage, and use slash commands with Javacord.
 
+You can create commands as easily as:
+```java
+@CommandDef(name = "ping",     description = "Will pong if pinged")
+@CommandDef(name = "fizzbuzz", description = "Fizz if divisible by 3, Buzz if divisible by 5",
+    options = {
+        @OptionDef(name = "number", description = "Fizz if divisible by 3, Buzz if divisible by 5",
+            type = INTEGER, required = true)
+    }
+)
+public class ExampleCommand {
+
+    @Slash(command = "ping")
+    public String ping() {
+        return "pong";
+    }
+
+    @Slash(command = "fizzbuzz")
+    public String fizzBuzz(@SlashOption("number") Integer number) {
+        StringBuilder sb = new StringBuilder();
+        if(number % 3 == 0) sb.append("fizz");
+        if(number % 5 == 0) {
+            if(sb.length() > 0) sb.append(" ");
+            sb.append("buzz");
+        }
+        return sb.length() == 0 ? "No matches" : sb.toString();
+    }
+}
+
+/** During Bot Initialization */
+DiscordApi api = getApiSomehow();
+SlashCommandDispatcher dispatcher = new SlashCommandDispatcher(api);
+dispatcher.queue(new ExampleCommand());
+dispatcher.submit(); 
+```
+
 # Tutorials
 For creating and updating commands, see
 * [Managing Commands via Objects](tutorial/define-classes.md)
@@ -10,6 +45,7 @@ For responding to your commands, see
 * [Command Listeners](tutorial/responding.md)
 
 It is also worth checking out [SlashCommandDispatcher](tutorial/slashcommanddispatcher.md)
+
 
 # Installing and Setup
 ## Maven
