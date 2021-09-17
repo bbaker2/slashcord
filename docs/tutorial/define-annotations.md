@@ -149,6 +149,7 @@ According to Discord, you can have a max of [25 Choices](https://discord.com/dev
 
 - If your `@ChoiceDef` is a child of an `@OptionDef` that is an `INTEGER`, you must populate the `intVal` property.
 - If your `@ChoiceDef` is a child of an `@OptionDef` that is an `STRING`, you must populate the `strVal` property.
+
 ```java
 @SubCommandDef(
     name = "choice-example",
@@ -198,7 +199,7 @@ According to Discord, you can have a max of [25 Choices](https://discord.com/dev
             }
         )
     }
-    )
+)
 public class TodayCommand {
     /*
     @Slash( command = "choice-example", sub = "today")         // will probably be somewhere in here
