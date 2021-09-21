@@ -160,6 +160,17 @@ public MessageBuilder optionLessExample(@SlashMeta User caller, @SlashMeta Chann
 }
 ```
 
+# @SlashException
+You can whitelist any class that extends `Throwable` to allow the `Throwable.getMessage()` to trickle back to the user. Any exception not declared by `@SlashException` or returns a `null` message will result in failed interaction.
+```java
+@SlashException(ArithmeticException.class)
+@Slash(command = "divide")
+public String divide(@SlashOption("number") Integer val) {
+    return String.valueOf(100/val);
+}
+
+```
+
 Other values derived from the `SlashCommandInteraction` will not conflict with Options and therefor will **not** require the `@SlashMeta` annotation. But there is no consequence if you use them for the following parameter types:
 - `DiscordApi`
 - `SlashCommandInteraction`
