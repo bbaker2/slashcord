@@ -160,7 +160,13 @@ public MessageBuilder optionLessExample(@SlashMeta User caller, @SlashMeta Chann
 }
 ```
 
-# @SlashException
+Other values derived from the `SlashCommandInteraction` will not conflict with Options and therefor will **not** require the `@SlashMeta` annotation. But there is no consequence if you use them for the following parameter types:
+- `DiscordApi`
+- `SlashCommandInteraction`
+- `InteractionImmediateResponseBuilder`
+- `InteractionFollowupMessageBuilder`
+
+## @SlashException
 You can whitelist any class that extends `Throwable` to allow the `Throwable.getMessage()` to trickle back to the user. Any exception not declared by `@SlashException` or returns a `null` message will result in failed interaction.
 ```java
 @SlashException(ArithmeticException.class)
@@ -170,12 +176,6 @@ public String divide(@SlashOption("number") Integer val) {
 }
 
 ```
-
-Other values derived from the `SlashCommandInteraction` will not conflict with Options and therefor will **not** require the `@SlashMeta` annotation. But there is no consequence if you use them for the following parameter types:
-- `DiscordApi`
-- `SlashCommandInteraction`
-- `InteractionImmediateResponseBuilder`
-- `InteractionFollowupMessageBuilder`
 
 ## Subscribing the handlers
 Now that you have some methods that are able to receive and respond to slash commands, we need subscribe our classes to the event handler.
