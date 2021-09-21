@@ -1,10 +1,12 @@
 package com.bbaker.slashcord.handler;
 
-import static com.bbaker.slashcord.util.CommonsUtil.isNotBlank;
+import static com.bbaker.slashcord.util.CommonsUtil.*;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -24,6 +26,7 @@ import org.javacord.api.interaction.callback.InteractionImmediateResponseBuilder
 import org.javacord.api.listener.interaction.SlashCommandCreateListener;
 
 import com.bbaker.slashcord.handler.annotation.Slash;
+import com.bbaker.slashcord.handler.annotation.SlashException;
 import com.bbaker.slashcord.handler.annotation.SlashMeta;
 import com.bbaker.slashcord.handler.annotation.SlashOption;
 import com.bbaker.slashcord.handler.args.AlwaysNullArgument;
@@ -44,6 +47,8 @@ import com.bbaker.slashcord.handler.response.AutoSuccess;
 import com.bbaker.slashcord.handler.response.StringResponse;
 import com.bbaker.slashcord.handler.response.ToStringResponse;
 import com.bbaker.slashcord.handler.response.VoidResponse;
+import com.bbaker.slashcord.handler.throwable.ExceptionHandler;
+import com.bbaker.slashcord.handler.throwable.SuppressException;
 
 public class SlashCommandListener implements SlashCommandCreateListener {
 
@@ -89,7 +94,6 @@ public class SlashCommandListener implements SlashCommandCreateListener {
     }
 
     public void addListener(Object handler) {
-
         Method[] methods = handler.getClass().getMethods();
 
         for(Method cmdMethod : methods) {
@@ -117,10 +121,26 @@ public class SlashCommandListener implements SlashCommandCreateListener {
             Parameter[] params = cmdMethod.getParameters();
             Function<SlashCommandInteraction, Object>[] argHandlers = generateParamHandlers(params);
             BiConsumer<Object, SlashCommandInteraction> resultHandler = generateResultHandler(cmdMethod.getReturnType());
+            Function<Throwable, String> exceptionHandler = generateExceptionHandler(cmdMethod);
 
-
-            SlashCommandHandler h = new SlashCommandHandler(handler, cmdMethod, resultHandler, argHandlers);
+            SlashCommandHandler h = new SlashCommandHandler(handler, cmdMethod, resultHandler, argHandlers, exceptionHandler);
             listeners.put(hash, h);
+        }
+
+    }
+
+    private Function<Throwable, String> generateExceptionHandler(Method method){
+        SlashException[] slashExceptions = method.getAnnotationsByType(SlashException.class);
+        if(slashExceptions.length == 0) {
+            return new SuppressException();
+        } else {
+            List<Class<? extends Throwable>> whitelist = new ArrayList<>();
+            for(SlashException se : slashExceptions) {
+                for(Class<? extends Throwable> allowed : se.value()) {
+                    whitelist.add(allowed);
+                }
+            }
+            return new ExceptionHandler(whitelist);
         }
 
     }
