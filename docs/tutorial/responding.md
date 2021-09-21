@@ -174,7 +174,6 @@ You can whitelist any class that extends `Throwable` to allow the `Throwable.get
 public String divide(@SlashOption("number") Integer val) {
     return String.valueOf(100/val);
 }
-
 ```
 
 ## Subscribing the handlers

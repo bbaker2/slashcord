@@ -27,9 +27,13 @@ public class Test {
 //        registerWithAnnotations(api);
 
         // for when you and to do both with one method call
-        everythingWithTheDispatcher(api);
+//        everythingWithTheDispatcher(api);
 
-        api.disconnect();
+
+        SlashCommandDispatcher dispatcher = new SlashCommandDispatcher(api);
+        dispatcher.queue(new ExceptionCommand());
+        dispatcher.submit().join().stream().forEach(System.out::println);
+//        api.disconnect();
 
         // If you were to run this code, we would "register" the same command
         // over and over. Slashcord is actually smart enough to skip redundant
