@@ -60,7 +60,7 @@ See the [wiki page](https://bbaker2.github.io/slashcord/) for detailed instructi
 <dependency>
     <groupId>com.github.bbaker2</groupId>
     <artifactId>slashcord</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 ## Gradle
@@ -73,7 +73,7 @@ allprojects {
 }
 
 dependencies {
-        implementation 'com.github.bbaker2:slashcord:1.0.0'
+        implementation 'com.github.bbaker2:slashcord:1.1.0'
 }
 
 ```
