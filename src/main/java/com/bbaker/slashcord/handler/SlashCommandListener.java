@@ -1,6 +1,6 @@
 package com.bbaker.slashcord.handler;
 
-import static com.bbaker.slashcord.util.CommonsUtil.*;
+import static com.bbaker.slashcord.util.CommonsUtil.isNotBlank;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -43,9 +44,7 @@ import com.bbaker.slashcord.handler.args.RoleOptionArgument;
 import com.bbaker.slashcord.handler.args.StringOptionArgument;
 import com.bbaker.slashcord.handler.args.UserMetaArgument;
 import com.bbaker.slashcord.handler.args.UserOptionArgument;
-import com.bbaker.slashcord.handler.response.AutoSuccess;
 import com.bbaker.slashcord.handler.response.StringResponse;
-import com.bbaker.slashcord.handler.response.ToStringResponse;
 import com.bbaker.slashcord.handler.response.VoidResponse;
 import com.bbaker.slashcord.handler.throwable.ExceptionHandler;
 import com.bbaker.slashcord.handler.throwable.SuppressException;
@@ -120,10 +119,10 @@ public class SlashCommandListener implements SlashCommandCreateListener {
 
             Parameter[] params = cmdMethod.getParameters();
             Function<SlashCommandInteraction, Object>[] argHandlers = generateParamHandlers(params);
-            BiConsumer<Object, SlashCommandInteraction> resultHandler = generateResultHandler(cmdMethod.getReturnType());
             Function<Throwable, String> exceptionHandler = generateExceptionHandler(cmdMethod);
+            BiConsumer<CompletableFuture<Object>, SlashCommandInteraction> resultHandler = generateResultHandler(cmdMethod.getReturnType(), exceptionHandler);
 
-            SlashCommandHandler h = new SlashCommandHandler(handler, cmdMethod, resultHandler, argHandlers, exceptionHandler);
+            SlashCommandHandler h = new SlashCommandHandler(handler, cmdMethod, argHandlers, resultHandler);
             listeners.put(hash, h);
         }
 
@@ -145,15 +144,15 @@ public class SlashCommandListener implements SlashCommandCreateListener {
 
     }
 
-    private BiConsumer<Object, SlashCommandInteraction> generateResultHandler(Class<?> returnType) {
+    private BiConsumer<CompletableFuture<Object>, SlashCommandInteraction> generateResultHandler(Class<?> returnType, Function<Throwable, String> exceptionHandler) {
         if(returnType.equals(Void.TYPE)){
             return new VoidResponse();
         } else if(returnType.isAssignableFrom(String.class)){
-            return new StringResponse();
+            return new StringResponse(exceptionHandler);
         } else if(hasCustomToString(returnType)){
-            return new ToStringResponse();
+            return new StringResponse(exceptionHandler);
         } else {
-            return new AutoSuccess();
+            return new VoidResponse();
         }
     }
 

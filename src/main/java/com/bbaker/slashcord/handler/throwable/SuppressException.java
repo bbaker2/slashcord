@@ -6,8 +6,8 @@ public class SuppressException implements Function<Throwable, String> {
 
     @Override
     public String apply(Throwable t) {
-        // skip all evaluations, just return null
-        return null;
+        // skip all evaluations, just return a default message
+        return "An unexpected error occured";
     }
 
 }

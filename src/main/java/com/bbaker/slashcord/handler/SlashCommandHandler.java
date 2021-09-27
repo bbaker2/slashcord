@@ -2,32 +2,29 @@ package com.bbaker.slashcord.handler;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.javacord.api.entity.message.MessageFlag;
 import org.javacord.api.interaction.SlashCommandInteraction;
 
 public class SlashCommandHandler implements Consumer<SlashCommandInteraction> {
 
     private Function<SlashCommandInteraction, Object>[] argHandlers;
 
-    private BiConsumer<Object, SlashCommandInteraction> returnHandler;
+    private BiConsumer<CompletableFuture<Object>, SlashCommandInteraction> responseHandler;
 
     private Object instance;
 
     private Method method;
 
-    private Function<Throwable, String> exceptionHandler;
-
-    public SlashCommandHandler(Object instance, Method method, BiConsumer<Object, SlashCommandInteraction> resultHandler,
-            Function<SlashCommandInteraction, Object>[] argHandlers, Function<Throwable, String> exceptionHandler) {
+    public SlashCommandHandler(Object instance, Method method, Function<SlashCommandInteraction, Object>[] argHandlers,
+            BiConsumer<CompletableFuture<Object>, SlashCommandInteraction> responseHandler) {
         this.instance = instance;
         this.method = method;
-        this.returnHandler = resultHandler;
         this.argHandlers = argHandlers;
-        this.exceptionHandler = exceptionHandler;
+        this.responseHandler = responseHandler;
     }
 
     @Override
@@ -39,20 +36,21 @@ public class SlashCommandHandler implements Consumer<SlashCommandInteraction> {
             args[i] = argHandlers[i].apply(sci);
         }
 
-        try {
-            Object result = method.invoke(instance, args);
-            returnHandler.accept(result, sci);
-        } catch (InvocationTargetException e) {
-            String error = exceptionHandler.apply(e.getTargetException());
-            if(error != null) {
-                sci.createImmediateResponder()
-                    .append(error)
-                    .setFlags(MessageFlag.EPHEMERAL)
-                    .respond();
+        CompletableFuture<Object> response = new CompletableFuture<>();
+
+        // those the handler in a thread, which will eventually product a result
+        sci.getApi().getThreadPool().getExecutorService().submit(() -> {
+            try {
+                Object value = method.invoke(instance, args);
+                response.complete(value);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                response.completeExceptionally(e);
             }
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
+
+        });
+
+        // pass the async method to the response handler
+        responseHandler.accept(response, sci);
 
     }
 

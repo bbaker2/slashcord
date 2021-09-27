@@ -1,6 +1,8 @@
 package com.bbaker.slashcord.handler.throwable;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.concurrent.CompletionException;
 import java.util.function.Function;
 
 public class ExceptionHandler implements Function<Throwable, String> {
@@ -13,13 +15,27 @@ public class ExceptionHandler implements Function<Throwable, String> {
 
     @Override
     public String apply(Throwable t) {
-        Class<?> throwableType = t.getClass();
+        // Check for these common exceptions to "unload" the real exception
+        Throwable realError = t;
+
+        // The wrapper exception caused by futures
+        if(realError instanceof CompletionException) {
+            realError = realError.getCause();
+        }
+
+        // The wrapper exception cuased by reflection
+        if(realError instanceof InvocationTargetException) {
+            realError = realError.getCause();
+        }
+
+
+        Class<?> throwableType = realError.getClass();
         for(Class<? extends Throwable> allowed : whitelist) {
             if(throwableType.isAssignableFrom(allowed)) {
-                return t.getMessage();
+                return realError.getMessage();
             }
         }
-        return null;
+        return "An unexpected error occured";
     }
 
 }
