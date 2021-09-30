@@ -1,7 +1,6 @@
 package com.bbaker.slashcord.structure;
 
-import static com.bbaker.slashcord.util.ConverterUtil.from;
-import static java.util.function.Function.identity;
+import static java.util.function.Function.*;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -72,32 +71,32 @@ public class SlashCommandRegister {
 
         CompletableFuture<List<UpsertResult>> allFutures = CompletableFuture.completedFuture(successful);
         // Perform inserts
-        System.out.println("Inserting " + prepared.toInsert.size() + " commands");
-        for(Meta<SlashCommandBuilder> insert : prepared.toInsert) {
+        System.out.println("Inserting " + prepared.getInserts().size() + " commands");
+        for(Meta<SlashCommandBuilder> insert : prepared.getInserts()) {
             allFutures = allFutures
-                .thenCompose(allSuccess -> insert.builder.createGlobal(api)) // insert one command
-                .thenApply(SuccessfulResult.insert(insert.def))
-                .exceptionally(FailedResult.insert(insert.def))
+                .thenCompose(allSuccess -> insert.getBuilder().createGlobal(api)) // insert one command
+                .thenApply(SuccessfulResult.insert(insert.getCommand()))
+                .exceptionally(FailedResult.insert(insert.getCommand()))
                 .thenApply(successful::add)							 // add the command (once created) to the success list
                 .thenApply(ignore -> successful);					 // A little trick to convert CompletableFuture<SlashCommand> into CompletableFuture<List<SlashCommand>>
 
         }
 
         // Perform updates
-        System.out.println("Updating " + prepared.toUpdate.size() + " commands");
-        for(Meta<SlashCommandUpdater> update : prepared.toUpdate) {
+        System.out.println("Updating " + prepared.getUpdates().size() + " commands");
+        for(Meta<SlashCommandUpdater> update : prepared.getUpdates()) {
             allFutures = allFutures
-                .thenCompose(allSuccess -> update.builder.updateGlobal(api)) // update one command
-                .thenApply(SuccessfulResult.update(update.def))
-                .exceptionally(FailedResult.update(update.def))
+                .thenCompose(allSuccess -> update.getBuilder().updateGlobal(api)) // update one command
+                .thenApply(SuccessfulResult.update(update.getCommand()))
+                .exceptionally(FailedResult.update(update.getCommand()))
                 .thenApply(successful::add)							 // add the command (once updated) to the success list
                 .thenApply(ignore -> successful);					 // A little trick to convert CompletableFuture<SlashCommand> into CompletableFuture<List<SlashCommand>>
         }
 
         // Auto-complete the skips, for the purposes of logging
-        System.out.println("Skipping " + prepared.toSkip.size() + " commands");
-        for(Meta<SlashCommand> skip : prepared.toSkip) {
-            successful.add(new SuccessfulResult(skip.def, skip.builder, Operation.SKIP));
+        System.out.println("Skipping " + prepared.getSkips().size() + " commands");
+        for(Meta<SlashCommand> skip : prepared.getSkips()) {
+            successful.add(new SuccessfulResult(skip.getCommand(), skip.getBuilder(), Operation.SKIP));
         }
 
         successful.addAll(failedQueued);
@@ -118,7 +117,7 @@ public class SlashCommandRegister {
                 .collect(Collectors.toList());
 
 
-        Upsert upsert = new Upsert();
+        UpsertImpl upsert = new UpsertImpl();
 
         outer:
         for(Command desired : queued) {
@@ -130,7 +129,7 @@ public class SlashCommandRegister {
                         // Add the Slashcommand to the skip list (for logging purposes)
                         SlashCommand discordCmd = nameToCmd.get(desired.getName());
                         if(discordCmd != null) {
-                            upsert.toSkip.add(new Meta(discordCmd, desired));
+                            upsert.skip(desired, discordCmd);
                         }
 
                         continue outer; // force continue the outer loop
@@ -141,8 +140,7 @@ public class SlashCommandRegister {
                         // will be small and will not be called often.
                         // So little inefficiency will not kill overall performance
                         long commandId = matchByName(originalList, existing.getName());
-                        Meta pair = new Meta(from(desired, commandId), desired);
-                        upsert.toUpdate.add(pair);
+                        upsert.update(desired, commandId);
                         continue outer; // force continue the outer loop
                     }
                 }
@@ -150,8 +148,7 @@ public class SlashCommandRegister {
             // if we complete the inner loop without a continue or break
             // we can assume the command does not yet exist in discord.
             // So queue this command for insert
-            Meta pair = new Meta(ConverterUtil.from(desired), desired);
-            upsert.toInsert.add(pair);
+            upsert.insert(desired);
         }
         return upsert;
     }
@@ -163,21 +160,6 @@ public class SlashCommandRegister {
             }
         }
         return 0; // pratically speaking, we will never reach here
-    }
-
-    private class Upsert {
-        final List<Meta<SlashCommandBuilder>> toInsert = new ArrayList<>();
-        final List<Meta<SlashCommandUpdater>> toUpdate = new ArrayList<>();
-        final List<Meta<SlashCommand>> toSkip   = new ArrayList<>();
-    }
-
-    private class Meta<B> {
-        public Meta(B trg, Command src) {
-            this.def = src;
-            this.builder = trg;
-        }
-        final B builder;
-        final Command def;
     }
 
 }
