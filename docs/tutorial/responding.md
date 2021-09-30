@@ -1,6 +1,6 @@
 # Command Usages via Annotations
 ## Handling Command
-Any public method can be used to receive a command. The method can either be a void or any return type that supports `String.valueOf(Object)`.
+Any public method can be used to receive a command. The method can either be a void or any return type has overridden the `toString()` method.
 See the below for the multiple ways to do the same thing
 ```java
 @SlashCommand(command = "say-hello")
@@ -14,14 +14,6 @@ public StringBuilder sayHello(){
     return new StringBuilder().append("hello world");
 }
 ```
-```java
-@SlashCommand(command = "say-hello")
-public MessageBuilder sayHello(){
-    return new MessageBuilder().append("hello world");
-}
-```
-**Note:** The `MessageBuilder` doesn't actually support `String.valueOf(Object)` but some special logic was introduced to support this. A standard message will be sent to the channel but a "success" hidden message will be returned to the calling user.
-**Warning:** `MessageBuilder` might be removed after beta. This has some weird interactions that I don't like
 ```java
 @SlashCommand(command = "say-hello")
 public void sayHello(@SlashMeta SlashCommandInteraction interaction){
@@ -49,6 +41,8 @@ public void sayHello(@SlashMeta InteractionFollowupMessageBuilder response){
 }
 ```
 See [@SlashMeta](#slashmeta) on how to use the `@SlashMeta` annotation
+### Immediate vs. Followup
+If your method is not a `void`, some extra handling will be performed behind the scenes to intelligently use `SlashCommandInteraction.createImmediateResponder()` if your code returns a value in > 2.75 ms. Otherwise `SlashCommandInteraction.respondLater()` will be called on your behalf and a `SlashCommandInteraction.createFollowupMessageBuilder()` will be used to respond. 
 ## Handling Options
 Using our [fizzbuzz](define-classes.md#basic-options) example from before, lets create a method that can read the `number` option. 
 As long as the parameter **name and type** match an option found in the slash command, then it will be passed into the method. Otherwise it will default to null.
