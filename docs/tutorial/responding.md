@@ -42,7 +42,8 @@ public void sayHello(@SlashMeta InteractionFollowupMessageBuilder response){
 ```
 See [@SlashMeta](#slashmeta) on how to use the `@SlashMeta` annotation
 ### Immediate vs. Followup
-If your method is not a `void`, some extra handling will be performed behind the scenes to intelligently use `SlashCommandInteraction.createImmediateResponder()` if your code returns a value in > 2.75 ms. Otherwise `SlashCommandInteraction.respondLater()` will be called on your behalf and a `SlashCommandInteraction.createFollowupMessageBuilder()` will be used to respond. 
+If your method is not a `void`, some extra handling will be performed behind the scenes to intelligently use `SlashCommandInteraction.createImmediateResponder()` if your code returns a value in less than 2.75 ms. 
+Otherwise `SlashCommandInteraction.respondLater()` will be called on your behalf and a `SlashCommandInteraction.createFollowupMessageBuilder()` will be used to respond. 
 ## Handling Options
 Using our [fizzbuzz](define-classes.md#basic-options) example from before, lets create a method that can read the `number` option. 
 As long as the parameter **name and type** match an option found in the slash command, then it will be passed into the method. Otherwise it will default to null.
