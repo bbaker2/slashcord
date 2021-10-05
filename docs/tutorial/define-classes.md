@@ -88,7 +88,7 @@ Calling the `.queue(Command)` method only prepares the command to be sent to Dis
 ```java
 DiscordApi api = getApiSomehow();
 
-SlashCommandRegister registry = new SlashCommandRegister();
+SlashCommandRegister registry = SlashCommandRegister.getInstance();
 registry.queue(createPingPong());
 registry.queue(createFizzBuzzCommand());
 registry.queue(createModsCommand());
@@ -103,7 +103,7 @@ DiscordApi api = getApiSomehow();
 Server serverA = getSomeServer();
 Server serverB = getADifferentServer();
 
-SlashCommandRegister registry = new SlashCommandRegister();
+SlashCommandRegister registry = SlashCommandRegister.getInstance();
 registry.queue(createPingPong());                       // global
 registry.queue(createFizzBuzzCommand(), serverA);       // created for serverA only
 registry.queue(createModsCommand(), serverB);           // created for serverB only

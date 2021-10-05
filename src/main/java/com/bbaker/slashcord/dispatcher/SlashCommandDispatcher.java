@@ -8,6 +8,7 @@ import org.javacord.api.DiscordApi;
 
 import com.bbaker.slashcord.handler.SlashCommandListener;
 import com.bbaker.slashcord.structure.SlashCommandRegister;
+import com.bbaker.slashcord.structure.SlashCommandRegisterImpl;
 import com.bbaker.slashcord.structure.results.UpsertResult;
 
 public class SlashCommandDispatcher {
@@ -38,7 +39,7 @@ public class SlashCommandDispatcher {
             api.addSlashCommandCreateListener(listener);
         }
 
-        SlashCommandRegister registry = new SlashCommandRegister();
+        SlashCommandRegister registry = new SlashCommandRegisterImpl();
         for(Object queued : queuedCommands) {
             // queue up the command to be sent to discord
             registry.queue(queued);

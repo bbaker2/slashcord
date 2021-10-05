@@ -66,7 +66,7 @@ public class Test {
      * @param api a live instance of Discord
      */
     public static void registerWithClasses(DiscordApi api) {
-        SlashCommandRegister register = new SlashCommandRegister();
+        SlashCommandRegister register = SlashCommandRegister.getInstance();
         register.queue(PingPongCommand.createPingPongDef());
         register.queue(FizzBuzz.createFizzBuzzCommand());
         register.queue(QuoteCommand.createQuoteCommand());
@@ -81,7 +81,7 @@ public class Test {
      */
     public static void registerWithAnnotations(DiscordApi api) {
 
-        SlashCommandRegister register = new SlashCommandRegister();
+        SlashCommandRegister register = SlashCommandRegister.getInstance();
         register.queue(new PingPongCommand());
         register.queue(new FizzBuzz());
         register.queue(new QuoteCommand());
