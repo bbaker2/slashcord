@@ -30,7 +30,7 @@ public class Test {
 //        everythingWithTheDispatcher(api);
 
 
-        SlashCommandDispatcher dispatcher = new SlashCommandDispatcher(api);
+        SlashCommandDispatcher dispatcher = SlashCommandDispatcher.getInstance(api);
         dispatcher.queue(new ExceptionCommand());
         dispatcher.submit().join().stream().forEach(System.out::println);
 //        api.disconnect();
@@ -50,7 +50,7 @@ public class Test {
      * @param api a live instance of Discord
      */
     public static void everythingWithTheDispatcher(DiscordApi api) {
-        SlashCommandDispatcher dispatcher = new SlashCommandDispatcher(api);
+        SlashCommandDispatcher dispatcher = SlashCommandDispatcher.getInstance(api);
         dispatcher.queue(new PingPongCommand());
         dispatcher.queue(new FizzBuzz());
         dispatcher.queue(new QuoteCommand());
@@ -96,7 +96,7 @@ public class Test {
      * @param api a live instance of Discord
      */
     public static void respondeWithAnnotations(DiscordApi api) {
-        SlashCommandDispatcher dispatcher = new SlashCommandDispatcher(api);
+        SlashCommandDispatcher dispatcher = SlashCommandDispatcher.getInstance(api);
         dispatcher.queue(new PingPongCommand());
         dispatcher.queue(new FizzBuzz());
         dispatcher.queue(new QuoteCommand());

@@ -6,7 +6,7 @@ Or you can use the `SlashCommandDispatcher`. It combines the functionality of `S
 
 ```java
 public void init(DiscordApi api){
-    SlashCommandDispatcher dispatcher = new SlashCommandDispatcher(api);
+    SlashCommandDispatcher dispatcher = SlashCommandDispatcher.getInstance(api);
     dispatcher.queue(createPingPong(),          new PingPongCommand());
     dispatcher.queue(createFizzBuzzCommand(),   new FizzBuzz());
     dispatcher.queue(createModsCommand(),       new QuoteCommand());
