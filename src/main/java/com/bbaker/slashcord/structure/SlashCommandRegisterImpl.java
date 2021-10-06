@@ -1,10 +1,12 @@
 package com.bbaker.slashcord.structure;
 
-import static java.util.function.Function.identity;
+import static java.util.function.Function.*;
+import static java.util.stream.Collectors.*;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -117,18 +119,36 @@ public class SlashCommandRegisterImpl implements SlashCommandRegister {
     }
 
     public Upsert previewInsert(DiscordApi api){
-        List<SlashCommand> originalList = api.getGlobalSlashCommands().join();
-        Map<String, SlashCommand> nameToCmd = originalList.stream().collect(Collectors.toMap(SlashCommand::getName, identity()));
-        List<Command> preExisting = originalList.stream()
-                .map(ConverterUtil::from)
-                .collect(Collectors.toList());
 
-
+        Map<Long, Map<String, SlashCommand>> cache = getCommands(api);
         UpsertImpl upsert = new UpsertImpl();
 
         outer:
         for(QueuedCommand each : queued) {
             Command desired = each.cmd;
+
+            Map<String, SlashCommand> cmdGroup;
+
+            if(each.isGlobal()) {
+                cmdGroup = cache.get(null);
+                if(cmdGroup == null || !cmdGroup.containsKey(desired.getName())){
+                    upsert.insert(desired, null);
+                } else {
+                    SlashCommand sc = cmdGroup.get(desired.getName());
+                    Command preExisting = ConverterUtil.from(sc);
+                    if(preExisting.equals(desired)) {
+                        upsert.skip(desired, sc, null);
+                    } else {
+                        upsert.update(preExisting, sc.getId(), null);
+                    }
+                }
+            }
+
+            for(Server server : each.servers) {
+                cmdGroup = cache.get(server.getId());
+            }
+
+
             for(Command existing : preExisting) {
                 // If the name matches, lets make sure the structures match
                 if(desired.getName().equals(existing.getName())){
@@ -168,6 +188,34 @@ public class SlashCommandRegisterImpl implements SlashCommandRegister {
             }
         }
         return 0; // pratically speaking, we will never reach here
+    }
+
+    private Map<Long, Map<String, SlashCommand>> getCommands(DiscordApi api) {
+        Map<Long, Map<String, SlashCommand>> cache = new HashMap<>();
+
+        for(QueuedCommand each : queued) {
+
+            if(each.isGlobal()) {
+                if(!cache.containsKey(null)) {
+                    List<SlashCommand> globalCmds = api.getGlobalSlashCommands().join();
+                    Map<String, SlashCommand> byVarname = globalCmds.stream().collect(toMap(SlashCommand::getName, identity()));
+                    cache.put(null, byVarname);
+                }
+                continue;
+            }
+
+            for(Server server : each.servers) {
+                Long serverId = server.getId();
+                if(!cache.containsKey(serverId)) {
+                    List<SlashCommand> serverCmds = api.getServerSlashCommands(server).join();
+                    Map<String, SlashCommand> byVarname = serverCmds.stream().collect(toMap(SlashCommand::getName, identity()));
+                    cache.put(serverId, byVarname);
+                }
+            }
+
+        }
+
+        return cache;
     }
 
     private class QueuedCommand {

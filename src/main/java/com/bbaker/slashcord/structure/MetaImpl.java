@@ -11,10 +11,10 @@ class MetaImpl<B> implements Meta<B> {
     private Command def;
     private List<Server> servers = null;
 
-    public MetaImpl(B trg, Command src) {
+    public MetaImpl(B trg, Command src, List<Server> servers) {
         this.def = src;
         this.builder = trg;
-        this.servers = null; // global
+        this.servers = servers;
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.bbaker.slashcord.structure;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.javacord.api.entity.server.Server;
 import org.javacord.api.interaction.SlashCommand;
 import org.javacord.api.interaction.SlashCommandBuilder;
 import org.javacord.api.interaction.SlashCommandUpdater;
@@ -20,9 +21,9 @@ class UpsertImpl implements Upsert {
         return toInsert;
     }
 
-    public void insert(Command cmdDef) {
+    public void insert(Command cmdDef, List<Server> servers) {
         SlashCommandBuilder insert = ConverterUtil.from(cmdDef);
-        toInsert.add(new MetaImpl<SlashCommandBuilder>(insert, cmdDef));
+        toInsert.add(new MetaImpl<SlashCommandBuilder>(insert, cmdDef, servers));
     }
 
     @Override
@@ -30,9 +31,9 @@ class UpsertImpl implements Upsert {
         return toUpdate;
     }
 
-    public void update(Command cmdDef, long commandId) {
+    public void update(Command cmdDef, long commandId, List<Server> servers) {
         SlashCommandUpdater update = ConverterUtil.from(cmdDef, commandId);
-        toUpdate.add(new MetaImpl<SlashCommandUpdater>(update, cmdDef));
+        toUpdate.add(new MetaImpl<SlashCommandUpdater>(update, cmdDef, servers));
     }
 
     @Override
@@ -40,7 +41,7 @@ class UpsertImpl implements Upsert {
         return toSkip;
     }
 
-    public void skip(Command cmdDef, SlashCommand skipped) {
-        toSkip.add(new MetaImpl<SlashCommand>(skipped, cmdDef));
+    public void skip(Command cmdDef, SlashCommand skipped, List<Server> servers) {
+        toSkip.add(new MetaImpl<SlashCommand>(skipped, cmdDef, servers));
     }
 }
