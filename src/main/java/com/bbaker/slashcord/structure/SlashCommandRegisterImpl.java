@@ -4,12 +4,14 @@ import static java.util.function.Function.identity;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import org.javacord.api.DiscordApi;
+import org.javacord.api.entity.server.Server;
 import org.javacord.api.interaction.SlashCommand;
 import org.javacord.api.interaction.SlashCommandBuilder;
 import org.javacord.api.interaction.SlashCommandUpdater;
@@ -27,34 +29,37 @@ import com.bbaker.slashcord.util.ConverterUtil;
 import com.bbaker.slashcord.util.ThrowableFunction;
 
 public class SlashCommandRegisterImpl implements SlashCommandRegister {
-
-    List<Command> queued = new ArrayList<>();
+    List<QueuedCommand> queued = new ArrayList<>();
     List<UpsertResult> failedQueued = new ArrayList<>();
 
     @Override
-    public SlashCommandRegister queue(Object command) {
+    public SlashCommandRegister queue(Object command, Server... servers) {
+        List<Server> serverList = servers.length == 0 ? null : Arrays.asList(servers);
+
+
         // Anything that is already a command gets
         // to be queued instantly
         if(command instanceof Command) {
-            queued.add((Command)command);
+            Command cmd = (Command)command;
+            queued.add(new QueuedCommand(cmd, serverList));
         }
 
         // then scan for annotation
-        scanAndQueue(CommandDef.class, 		command, ConverterUtil::from);
-        scanAndQueue(SubCommandDef.class, 	command, ConverterUtil::from);
-        scanAndQueue(GroupCommandDef.class, command, ConverterUtil::from);
+        scanAndQueue(CommandDef.class, 		command, ConverterUtil::from, serverList);
+        scanAndQueue(SubCommandDef.class, 	command, ConverterUtil::from, serverList);
+        scanAndQueue(GroupCommandDef.class, command, ConverterUtil::from, serverList);
 
         return this;
     }
 
-    private <T extends Annotation> void scanAndQueue(Class<T> anotation, Object instance, ThrowableFunction<T, Command, BadAnnotation> converter){
+    private <T extends Annotation> void scanAndQueue(Class<T> anotation, Object instance, ThrowableFunction<T, Command, BadAnnotation> converter, List<Server> servers){
         T[] repeatingDefs = instance.getClass().getAnnotationsByType(anotation);
 
         for(T cmdDef : repeatingDefs) {
             // if one does exist, attempt to convert it into the Command class
             try {
                 Command cmd = converter.apply(cmdDef);
-                queued.add(cmd);
+                queued.add(new QueuedCommand(cmd, servers));
             } catch (BadAnnotation e) {
                 // If there are failures... suppress the exception
                 // and short circuit
@@ -122,7 +127,8 @@ public class SlashCommandRegisterImpl implements SlashCommandRegister {
         UpsertImpl upsert = new UpsertImpl();
 
         outer:
-        for(Command desired : queued) {
+        for(QueuedCommand each : queued) {
+            Command desired = each.cmd;
             for(Command existing : preExisting) {
                 // If the name matches, lets make sure the structures match
                 if(desired.getName().equals(existing.getName())){
@@ -162,6 +168,22 @@ public class SlashCommandRegisterImpl implements SlashCommandRegister {
             }
         }
         return 0; // pratically speaking, we will never reach here
+    }
+
+    private class QueuedCommand {
+
+        public QueuedCommand(Command cmd, List<Server> servers) {
+            this.cmd = cmd;
+            this.servers = servers;
+        }
+
+
+        Command cmd;
+        List<Server> servers;
+
+        public boolean isGlobal() {
+            return servers == null; // a non-null, but empty list is STILL declared as a server command
+        }
     }
 
 }
