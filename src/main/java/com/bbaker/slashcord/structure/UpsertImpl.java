@@ -12,9 +12,9 @@ import com.bbaker.slashcord.structure.entity.Command;
 import com.bbaker.slashcord.util.ConverterUtil;
 
 class UpsertImpl implements Upsert {
-    private List<Meta<SlashCommandBuilder>> toInsert = new ArrayList<>();
-    private List<Meta<SlashCommandUpdater>> toUpdate = new ArrayList<>();
-    private List<Meta<SlashCommand>> toSkip   = new ArrayList<>();
+    private List<MetaImpl<SlashCommandBuilder>> toInsert = new ArrayList<>();
+    private List<MetaImpl<SlashCommandUpdater>> toUpdate = new ArrayList<>();
+    private List<MetaImpl<SlashCommand>> toSkip   = new ArrayList<>();
 
     @Override
     public List<Meta<SlashCommandBuilder>> getInserts() {

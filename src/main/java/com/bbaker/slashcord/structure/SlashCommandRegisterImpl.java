@@ -144,8 +144,22 @@ public class SlashCommandRegisterImpl implements SlashCommandRegister {
                 }
             }
 
+            List<Server> toInsert = new ArrayList<>();
+            List<Server> toUpdate = new ArrayList<>();
+            List<Server> toSkip = new ArrayList<>();
             for(Server server : each.servers) {
                 cmdGroup = cache.get(server.getId());
+                if(cmdGroup == null || !cmdGroup.containsKey(desired.getName())){
+                    upsert.insert(desired, toInsert);
+                } else {
+                    SlashCommand sc = cmdGroup.get(desired.getName());
+                    Command preExisting = ConverterUtil.from(sc);
+                    if(preExisting.equals(desired)) {
+                        upsert.skip(desired, sc, toSkip);
+                    } else {
+                        upsert.update(preExisting, sc.getId(), toUpdate);
+                    }
+                }
             }
 
 
