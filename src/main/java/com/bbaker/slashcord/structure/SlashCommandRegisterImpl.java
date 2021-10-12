@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.server.Server;
@@ -123,85 +122,51 @@ public class SlashCommandRegisterImpl implements SlashCommandRegister {
         Map<Long, Map<String, SlashCommand>> cache = getCommands(api);
         UpsertImpl upsert = new UpsertImpl();
 
-        outer:
         for(QueuedCommand each : queued) {
             Command desired = each.cmd;
 
             Map<String, SlashCommand> cmdGroup;
 
             if(each.isGlobal()) {
-                cmdGroup = cache.get(null);
-                if(cmdGroup == null || !cmdGroup.containsKey(desired.getName())){
-                    upsert.insert(desired, null);
-                } else {
-                    SlashCommand sc = cmdGroup.get(desired.getName());
-                    Command preExisting = ConverterUtil.from(sc);
-                    if(preExisting.equals(desired)) {
-                        upsert.skip(desired, sc, null);
-                    } else {
-                        upsert.update(preExisting, sc.getId(), null);
-                    }
-                }
+                processGloba(cache, upsert, desired);
+                continue;
             }
 
-            List<Server> toInsert = new ArrayList<>();
-            List<Server> toUpdate = new ArrayList<>();
-            List<Server> toSkip = new ArrayList<>();
             for(Server server : each.servers) {
                 cmdGroup = cache.get(server.getId());
+                // if a pre-existing command does not exist with the same name... insert
                 if(cmdGroup == null || !cmdGroup.containsKey(desired.getName())){
-                    upsert.insert(desired, toInsert);
+                    upsert.insert(desired, server);
                 } else {
+                    // otherwise, confirm if we are updating or if no action needs to be taken
                     SlashCommand sc = cmdGroup.get(desired.getName());
                     Command preExisting = ConverterUtil.from(sc);
                     if(preExisting.equals(desired)) {
-                        upsert.skip(desired, sc, toSkip);
+                        upsert.skip(desired, sc, server);
                     } else {
-                        upsert.update(preExisting, sc.getId(), toUpdate);
+                        upsert.update(preExisting, sc.getId(), server);
                     }
                 }
             }
-
-
-            for(Command existing : preExisting) {
-                // If the name matches, lets make sure the structures match
-                if(desired.getName().equals(existing.getName())){
-                    // they match. We do not have to queue this command for updates
-                    if(desired.equals(existing)) {
-                        // Add the Slashcommand to the skip list (for logging purposes)
-                        SlashCommand discordCmd = nameToCmd.get(desired.getName());
-                        if(discordCmd != null) {
-                            upsert.skip(desired, discordCmd);
-                        }
-
-                        continue outer; // force continue the outer loop
-
-                    // they do not match. Queue this command for an update
-                    } else {
-                        // I'm aware that we are now performing a n^3 loop, but in practice these lists
-                        // will be small and will not be called often.
-                        // So little inefficiency will not kill overall performance
-                        long commandId = matchByName(originalList, existing.getName());
-                        upsert.update(desired, commandId);
-                        continue outer; // force continue the outer loop
-                    }
-                }
-            }
-            // if we complete the inner loop without a continue or break
-            // we can assume the command does not yet exist in discord.
-            // So queue this command for insert
-            upsert.insert(desired);
         }
+
         return upsert;
     }
 
-    private long matchByName(List<SlashCommand> commands, String cmdName) {
-        for(SlashCommand sc : commands) {
-            if(sc.getName().equals(cmdName)) {
-                return sc.getId();
+    private void processGloba(Map<Long, Map<String, SlashCommand>> cache, UpsertImpl upsert, Command desired) {
+        Map<String, SlashCommand> cmdGroup;
+        cmdGroup = cache.get(null);
+        if(cmdGroup == null || !cmdGroup.containsKey(desired.getName())){
+            upsert.insert(desired, null);
+        } else {
+            SlashCommand sc = cmdGroup.get(desired.getName());
+            Command preExisting = ConverterUtil.from(sc);
+            if(preExisting.equals(desired)) {
+                upsert.skip(desired, sc, null);
+            } else {
+                upsert.update(preExisting, sc.getId(), null);
             }
         }
-        return 0; // pratically speaking, we will never reach here
     }
 
     private Map<Long, Map<String, SlashCommand>> getCommands(DiscordApi api) {

@@ -1,5 +1,7 @@
 package com.bbaker.slashcord.examples;
 
+import java.util.Arrays;
+
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.event.interaction.SlashCommandCreateEvent;
@@ -19,6 +21,10 @@ public class Test {
     public static void main(String...args) {
         DiscordApi api = new DiscordApiBuilder().setToken(args[0]).login().join();
 
+        api.bulkOverwriteGlobalSlashCommands(Arrays.asList());
+
+        api.disconnect();
+
         // just creating/updating commands
 //        registerWithClasses(api);
 //        registerWithAnnotations(api);
@@ -30,9 +36,9 @@ public class Test {
 //        everythingWithTheDispatcher(api);
 
 
-        SlashCommandDispatcher dispatcher = SlashCommandDispatcher.getInstance(api);
-        dispatcher.queue(new ExceptionCommand());
-        dispatcher.submit().join().stream().forEach(System.out::println);
+//        SlashCommandDispatcher dispatcher = SlashCommandDispatcher.getInstance(api);
+//        dispatcher.queue(new ExceptionCommand());
+//        dispatcher.submit().join().stream().forEach(System.out::println);
 //        api.disconnect();
 
         // If you were to run this code, we would "register" the same command
